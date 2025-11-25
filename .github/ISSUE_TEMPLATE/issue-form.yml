@@ -1,0 +1,23 @@
+name: '이슈 생성'
+description: 'Repo에 이슈를 생성합니다'
+labels: [feat]
+title: '이슈 이름을 작성해주세요'
+body:
+  - type: input
+    id: description
+    attributes:
+      label: 'Description'
+      description: '이슈에 대한 간략한 설명'
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: 'TODO'
+      description: '작업목록 작성'
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+    validations:
+      required: true

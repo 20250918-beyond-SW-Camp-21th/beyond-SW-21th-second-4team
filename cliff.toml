@@ -1,0 +1,44 @@
+[changelog]
+header = """
+# 변경 이력
+
+프로젝트의 모든 주요 변경 사항이 이 파일에 문서화됩니다.
+
+"""
+
+body = """
+{% if version %}\
+    ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+    ## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | upper_first }}
+    {% for commit in commits %}
+        - {% if commit.scope %}**{{ commit.scope }}**: {% endif %}{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.link }}))
+    {%- endfor %}
+{% endfor %}\n
+"""
+
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+    { message = "^feat", group = "새로운 기능" },
+    { message = "^fix", group = "버그 수정" },
+    { message = "^perf", group = "성능 개선" },
+    { message = "^refactor", group = "리팩토링" },
+    { message = "^docs", group = "문서" },
+    { message = "^style", group = "스타일" },
+    { message = "^test", group = "테스트" },
+    { message = "^chore", group = "기타" },
+    { message = "^build", group = "빌드" },
+    { message = "^ci", group = "CI/CD" },
+]
+
+[remote.github]
+owner = "20250918-beyond-SW-Camp-21th"
+repo = "beyond-SW-21th-second-4team"
