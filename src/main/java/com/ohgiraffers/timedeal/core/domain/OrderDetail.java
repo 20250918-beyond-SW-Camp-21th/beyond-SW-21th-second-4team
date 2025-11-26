@@ -12,21 +12,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_detail")
+@Table(name = "order_details")
 public class OrderDetail extends BaseEntity {
 
     @Column(name = "order_id", nullable = false)
-    private int orderId;
+    private Long orderId;
 
     @Column(name = "promotion_id", nullable = false)
-    private int promotionId;
+    private Integer promotionId;
 
     @Column(name = "quantity", nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(name = "unit_price", nullable = false)
-    private double unitPrice;
+    private Double unitPrice;
 
     @Column(name = "subtotal", nullable = false)
-    private double subtotal;
+    private Double subtotal;
 }
