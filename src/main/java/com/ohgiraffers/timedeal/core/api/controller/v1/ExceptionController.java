@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,6 +29,12 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResult<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException : {}", e.getMessage(), e);
+        return new ResponseEntity<>(ApiResult.error(ErrorType.DEFAULT_ARGUMENT_NOT_VALID), ErrorType.DEFAULT_ARGUMENT_NOT_VALID.getStatus());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResult<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException : {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResult.error(ErrorType.DEFAULT_ARGUMENT_NOT_VALID), ErrorType.DEFAULT_ARGUMENT_NOT_VALID.getStatus());
     }
 
