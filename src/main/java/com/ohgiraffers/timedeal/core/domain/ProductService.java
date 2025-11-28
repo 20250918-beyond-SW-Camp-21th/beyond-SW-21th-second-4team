@@ -28,18 +28,13 @@ public class ProductService {
         // this.promotionRepository = promotionRepository;
     }
 
-    // --- 비즈니스 로직 (이전과 동일) ---
-
     // 1. 상품 추가
     @Transactional
     public Long create(ProductRequest request) throws IOException {
-        String base64Image = convertToBase64(request.getImageFile());
-
         Product product = new Product(
-                null,
                 request.getName(),
                 request.getDescription(),
-                base64Image,
+                request.getImageUrl(),
                 request.getPrice()
         );
 
@@ -57,12 +52,7 @@ public class ProductService {
         //     throw new IllegalStateException("프로모션에 등록된 상품은 수정할 수 없습니다.");
         // }
 
-        String base64Image = null;
-        if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
-            base64Image = convertToBase64(request.getImageFile());
-        }
-
-        product.update(request.getName(), request.getDescription(), request.getPrice(), base64Image);
+        product.update(request.getName(), request.getDescription(), request.getPrice(), request.getImageUrl());
     }
 
     // 3. 상품 삭제
@@ -93,14 +83,5 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
         return new ProductResponse(product);
-    }
-
-    // [내부 메서드] 이미지 변환
-    private String convertToBase64(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return "";
-        }
-        byte[] bytes = file.getBytes();
-        return Base64.getEncoder().encodeToString(bytes);
     }
 }

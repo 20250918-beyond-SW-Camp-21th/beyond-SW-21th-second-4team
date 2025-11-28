@@ -13,26 +13,19 @@ import lombok.NoArgsConstructor;
 @Table(name = "products")
 public class Product extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "name", length = 255, nullable = false)
     private String name;
 
     @Column(name = "description", length = 255, nullable = false)
     private String description;
 
-    // String에 @Lob을 쓰면 DB에서는 LONGTEXT(MySQL)나 CLOB으로 생성됩니다.
-    @Lob
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    // 요청하신 대로 String 타입으로 설정했습니다.
     @Column(name = "price", nullable = false)
-    private String price;
+    private int price;
 
-    public void update(String name, String description, String price, String imageUrl) {
+    public void update(String name, String description, int price, String imageUrl) {
         this.name = name;
         this.description = description;
         this.price = price;

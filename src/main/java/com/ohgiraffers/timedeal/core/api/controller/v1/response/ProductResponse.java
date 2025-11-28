@@ -8,7 +8,7 @@ public class ProductResponse {
     private Long id;
     private String name;
     private String description;
-    private String price;
+    private int price;
     private String imageUrl; // Base64 문자열 반환
 
     public ProductResponse(Product product) {

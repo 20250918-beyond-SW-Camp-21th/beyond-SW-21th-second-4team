@@ -8,6 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductRequest {
     private String name;
     private String description;
-    private String price; // Entity 타입에 맞춰 String
-    private MultipartFile imageFile; // 파일 업로드용
+    private int price;
+    private String imageUrl; // 파일 업로드용
 }
