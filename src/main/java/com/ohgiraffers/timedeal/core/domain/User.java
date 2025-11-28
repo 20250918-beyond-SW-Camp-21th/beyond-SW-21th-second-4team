@@ -27,6 +27,11 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    public User(String name, int money, int total_saved){
+        this.name = name;
+        this.money = money;
+        this.total_saved = total_saved;
+    }
 
     public User (String email, String password, String name) {
         this.email = email;
