@@ -19,7 +19,7 @@ public class OrderDetail extends BaseEntity {
     private Long orderId;
 
     @Column(name = "promotion_id", nullable = false)
-    private Integer promotionId;
+    private Long promotionId;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -28,5 +28,5 @@ public class OrderDetail extends BaseEntity {
     private Double unitPrice;
 
     @Column(name = "subtotal", nullable = false)
-    private Double subtotal;
+    private Integer subtotal;
 }
