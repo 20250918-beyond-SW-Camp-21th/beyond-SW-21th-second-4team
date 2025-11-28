@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-public interface OrderRepository extends JpaRepository<Order,Integer> {}
+public interface OrderRepository extends JpaRepository<Order,Integer> {
+}
