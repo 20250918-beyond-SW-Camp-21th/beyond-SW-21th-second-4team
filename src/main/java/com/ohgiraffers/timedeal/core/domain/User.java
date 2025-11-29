@@ -26,6 +26,9 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name="total_saved")
+    private int total_saved =0;
+
     public User(String name, int money, int total_saved){
         this.name = name;
         this.money = money;
