@@ -1,10 +1,11 @@
 package com.ohgiraffers.timedeal.core.api.controller.v1.response;
 
-import java.time.LocalTime;
+import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 
 public record QueueResponse(
-        String token,
-        QueueStatusResponse queueStatusResponse
+        Long position,
+        Long waitTime,
+        QueueStatus status
 ) {
 
 }
