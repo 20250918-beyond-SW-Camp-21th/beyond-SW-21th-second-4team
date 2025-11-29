@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 11st Timedeal Custom Styles */
+@layer base {
+  body {
+    @apply m-0 font-sans text-text-primary bg-white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* Product Card Base Styles */
+  .product-card {
+    @apply border border-border-default rounded-card transition-shadow duration-200;
+  }
+
+  .product-card:hover {
+    @apply shadow-md;
+  }
+
+  /* Badge Base Styles */
+  .badge {
+    @apply inline-block px-2 py-1 text-xs font-bold rounded;
+  }
+
+  .badge-discount {
+    @apply bg-sale-red text-white;
+  }
+
+  .badge-soldout {
+    @apply bg-badge-gray text-white;
+  }
+
+  .badge-limited {
+    @apply bg-warning-orange text-white;
+  }
+
+  .badge-new {
+    @apply bg-primary-blue text-white;
+  }
+
+  /* Price Display */
+  .price-original {
+    @apply text-text-meta text-original-price line-through;
+  }
+
+  .price-sale {
+    @apply text-sale-red text-sale-price font-bold font-number;
+  }
+
+  .price-discount {
+    @apply text-sale-red text-sale-percent font-normal font-number;
+  }
+
+  /* Button Styles */
+  .btn-primary {
+    @apply bg-sale-red text-white px-6 py-3 rounded font-bold hover:bg-sale-red-alt transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-primary-blue text-white px-6 py-3 rounded font-bold hover:bg-opacity-90 transition-colors duration-200;
+  }
+
+  .btn-disabled {
+    @apply bg-badge-gray text-white px-6 py-3 rounded font-bold cursor-not-allowed opacity-60;
+  }
+}
