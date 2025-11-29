@@ -3,6 +3,7 @@ package com.ohgiraffers.timedeal.core.domain;
 import com.ohgiraffers.timedeal.storage.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,14 @@ public class OrderDetail extends BaseEntity {
 
     @Column(name = "subtotal", nullable = false)
     private Double subtotal;
+
+    @Column(name = "name", length = 255, nullable = false)
+    private String name;
+
+    @Lob
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
 
     public static OrderDetail of(Long orderId, Long promotionId, Integer quantity, Integer unitPrice) {
         OrderDetail detail = new OrderDetail();

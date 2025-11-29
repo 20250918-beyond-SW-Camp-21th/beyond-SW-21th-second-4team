@@ -2,25 +2,17 @@ package com.ohgiraffers.timedeal.core.api.controller.v1;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.LoginRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.SignUpRequest;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageOrderResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
 import com.ohgiraffers.timedeal.core.domain.UserService;
 import com.ohgiraffers.timedeal.core.support.response.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/api/v1/users/signIn")
     public ApiResult<?> signIn(@RequestBody LoginRequest request) {
