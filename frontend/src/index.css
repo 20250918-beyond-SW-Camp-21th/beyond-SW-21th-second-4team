@@ -1,74 +1,150 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* 11st Timedeal Custom Styles */
-@layer base {
-  body {
-    @apply m-0 font-sans text-text-primary bg-white;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+/* 11st Timedeal Custom Theme */
+@theme {
+  /* Colors */
+  --color-sale-red: #ff0038;
+  --color-sale-red-alt: #f62e3d;
+  --color-sale-red-bright: #ff334c;
 
-  * {
-    box-sizing: border-box;
-  }
+  --color-primary-blue: #0b83e6;
+  --color-navy-blue: #3a4370;
+  --color-success-green: #249356;
+  --color-warning-orange: #ff8100;
+  --color-premium-purple: #6423ff;
+
+  --color-text-primary: #111111;
+  --color-text-secondary: #333333;
+  --color-text-tertiary: #666666;
+  --color-text-meta: #999999;
+  --color-border-default: #dadada;
+  --color-border-light: #f0f0f0;
+  --color-bg-gray: #f5f5f5;
+
+  --color-badge-red: #ff0038;
+  --color-badge-blue: #0b83e6;
+  --color-badge-navy: #3a4370;
+  --color-badge-green: #249356;
+  --color-badge-orange: #ff8100;
+  --color-badge-purple: #6423ff;
+  --color-badge-gray: #999999;
+
+  /* Font Families */
+  --font-family-sans: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-number: Tahoma, Arial, sans-serif;
+
+  /* Border Radius */
+  --radius-card: 4px;
 }
 
-@layer components {
-  /* Product Card Base Styles */
-  .product-card {
-    @apply border border-border-default rounded-card transition-shadow duration-200;
-  }
+/* Base Styles */
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+  color: #111111;
+  background-color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  .product-card:hover {
-    @apply shadow-md;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  /* Badge Base Styles */
-  .badge {
-    @apply inline-block px-2 py-1 text-xs font-bold rounded;
-  }
+/* Product Card Base Styles */
+.product-card {
+  border: 1px solid #dadada;
+  border-radius: 4px;
+  transition: box-shadow 200ms;
+}
 
-  .badge-discount {
-    @apply bg-sale-red text-white;
-  }
+.product-card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
 
-  .badge-soldout {
-    @apply bg-badge-gray text-white;
-  }
+/* Badge Base Styles */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+}
 
-  .badge-limited {
-    @apply bg-warning-orange text-white;
-  }
+.badge-discount {
+  background-color: #ff0038;
+  color: white;
+}
 
-  .badge-new {
-    @apply bg-primary-blue text-white;
-  }
+.badge-soldout {
+  background-color: #999999;
+  color: white;
+}
 
-  /* Price Display */
-  .price-original {
-    @apply text-text-meta text-original-price line-through;
-  }
+.badge-limited {
+  background-color: #ff8100;
+  color: white;
+}
 
-  .price-sale {
-    @apply text-sale-red text-sale-price font-bold font-number;
-  }
+.badge-new {
+  background-color: #0b83e6;
+  color: white;
+}
 
-  .price-discount {
-    @apply text-sale-red text-sale-percent font-normal font-number;
-  }
+/* Price Display */
+.price-original {
+  color: #999999;
+  font-size: 12px;
+  text-decoration: line-through;
+}
 
-  /* Button Styles */
-  .btn-primary {
-    @apply bg-sale-red text-white px-6 py-3 rounded font-bold hover:bg-sale-red-alt transition-colors duration-200;
-  }
+.price-sale {
+  color: #ff0038;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: Tahoma, Arial, sans-serif;
+}
 
-  .btn-secondary {
-    @apply bg-primary-blue text-white px-6 py-3 rounded font-bold hover:bg-opacity-90 transition-colors duration-200;
-  }
+.price-discount {
+  color: #ff0038;
+  font-size: 25px;
+  font-weight: 400;
+  font-family: Tahoma, Arial, sans-serif;
+}
 
-  .btn-disabled {
-    @apply bg-badge-gray text-white px-6 py-3 rounded font-bold cursor-not-allowed opacity-60;
-  }
+/* Button Styles */
+.btn-primary {
+  background-color: #ff0038;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  transition: background-color 200ms;
+}
+
+.btn-primary:hover {
+  background-color: #f62e3d;
+}
+
+.btn-secondary {
+  background-color: #0b83e6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  transition: opacity 200ms;
+}
+
+.btn-secondary:hover {
+  opacity: 0.9;
+}
+
+.btn-disabled {
+  background-color: #999999;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
