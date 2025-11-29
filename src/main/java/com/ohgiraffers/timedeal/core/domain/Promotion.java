@@ -41,8 +41,8 @@ public class Promotion extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "totla_quantity")
-    private Integer totlaQuantity;
+    @Column(name = "total_quantity")
+    private Integer totalQuantity;
 
     @Column(name = "sold_quantity")
     private Integer soldQuantity;
@@ -51,4 +51,10 @@ public class Promotion extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PromotionStatus promotionStatus = PromotionStatus.ACTIVE;
 
+    public void increaseSoldQuantity() {
+        if(this.soldQuantity > this.totalQuantity) {
+            throw new IllegalArgumentException("재고가 모두 소진되었습니다.");
+        }
+        this.soldQuantity += 1;
+    }
 }
