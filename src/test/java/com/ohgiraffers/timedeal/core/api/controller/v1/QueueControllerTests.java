@@ -1,7 +1,6 @@
 package com.ohgiraffers.timedeal.core.api.controller.v1;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueStatusResponse;
 import com.ohgiraffers.timedeal.core.domain.QueueService;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -42,8 +41,7 @@ class QueueControllerTests {
             // given
             Long dealId = 1L;
             Long userId = 100L;
-            QueueStatusResponse queueStatusResponse = new QueueStatusResponse(0L, 0L, QueueStatus.WAITING);
-            QueueResponse queueResponse = new QueueResponse("test-token", queueStatusResponse);
+            QueueResponse queueResponse = new QueueResponse(0L, 0L, QueueStatus.WAITING);
 
             given(queueService.enterQueue(dealId, userId)).willReturn(queueResponse);
 
@@ -53,10 +51,9 @@ class QueueControllerTests {
                             .param("userId", userId.toString()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.result").value("SUCCESS"))
-                    .andExpect(jsonPath("$.data.token").exists())
-                    .andExpect(jsonPath("$.data.queueStatusResponse.position").value(0))
-                    .andExpect(jsonPath("$.data.queueStatusResponse.waitTime").value(0))
-                    .andExpect(jsonPath("$.data.queueStatusResponse.status").value("WAITING"));
+                    .andExpect(jsonPath("$.data.position").value(0))
+                    .andExpect(jsonPath("$.data.waitTime").value(0))
+                    .andExpect(jsonPath("$.data.status").value("WAITING"));
         }
 
         @Test
@@ -65,8 +62,7 @@ class QueueControllerTests {
             // given
             Long dealId = 1L;
             Long userId = 100L;
-            QueueStatusResponse queueStatusResponse = new QueueStatusResponse(5L, 50L, QueueStatus.WAITING);
-            QueueResponse queueResponse = new QueueResponse("test-token", queueStatusResponse);
+            QueueResponse queueResponse = new QueueResponse(5L, 50L, QueueStatus.WAITING);
 
             given(queueService.enterQueue(dealId, userId)).willReturn(queueResponse);
 
@@ -76,10 +72,9 @@ class QueueControllerTests {
                             .param("userId", userId.toString()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.result").value("SUCCESS"))
-                    .andExpect(jsonPath("$.data.token").exists())
-                    .andExpect(jsonPath("$.data.queueStatusResponse.position").value(5))
-                    .andExpect(jsonPath("$.data.queueStatusResponse.waitTime").value(50))
-                    .andExpect(jsonPath("$.data.queueStatusResponse.status").value("WAITING"));
+                    .andExpect(jsonPath("$.data.position").value(5))
+                    .andExpect(jsonPath("$.data.waitTime").value(50))
+                    .andExpect(jsonPath("$.data.status").value("WAITING"));
         }
 
         @Test
