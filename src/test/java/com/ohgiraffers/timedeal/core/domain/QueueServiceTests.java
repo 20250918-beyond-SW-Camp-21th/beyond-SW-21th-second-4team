@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,10 +22,10 @@ import static org.mockito.Mockito.verify;
 class QueueServiceTests {
 
     @Mock
-    RedisTemplate<String, Object> redisTemplate;
+    StringRedisTemplate stringRedisTemplate;
 
     @Mock
-    ZSetOperations<String, Object> zsetOperations;
+    ZSetOperations<String, String> zSetOps;
 
     @InjectMocks
     QueueService queueService;
@@ -36,22 +37,21 @@ class QueueServiceTests {
         Long dealId = 1L;
         Long userId = 100L;
 
-        given(redisTemplate.opsForZSet()).willReturn(zsetOperations);
-        given(zsetOperations.add(anyString(), any(), anyDouble())).willReturn(true);
-        given(zsetOperations.rank(anyString(), any())).willReturn(0L);
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.add(anyString(), any(), anyDouble())).willReturn(true);
+        given(zSetOps.rank(anyString(), any())).willReturn(0L);
 
         // when
         QueueResponse response = queueService.enterQueue(dealId, userId);
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.token()).isNotNull();
-        assertThat(response.queueStatusResponse().position()).isEqualTo(0L);
-        assertThat(response.queueStatusResponse().waitTime()).isEqualTo(0L);
-        assertThat(response.queueStatusResponse().status()).isEqualTo(QueueStatus.WAITING);
+        assertThat(response.position()).isEqualTo(0L);
+        assertThat(response.waitTime()).isEqualTo(0L);
+        assertThat(response.status()).isEqualTo(QueueStatus.WAITING);
 
-        verify(zsetOperations).add(eq("queue:1"), eq(userId), anyDouble());
-        verify(zsetOperations).rank("queue:1", userId);
+        verify(zSetOps).add(eq("queue:1"), eq("user:" + userId), anyDouble());
+        verify(zSetOps).rank("queue:1", userId);
     }
 
     @Test
@@ -61,16 +61,16 @@ class QueueServiceTests {
         Long dealId = 1L;
         Long userId = 100L;
 
-        given(redisTemplate.opsForZSet()).willReturn(zsetOperations);
-        given(zsetOperations.add(anyString(), any(), anyDouble())).willReturn(true);
-        given(zsetOperations.rank(anyString(), any())).willReturn(10L);
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.add(anyString(), any(), anyDouble())).willReturn(true);
+        given(zSetOps.rank(anyString(), any())).willReturn(10L);
 
         // when
         QueueResponse response = queueService.enterQueue(dealId, userId);
 
         // then
-        assertThat(response.queueStatusResponse().position()).isEqualTo(10L);
-        assertThat(response.queueStatusResponse().waitTime()).isEqualTo(10L);
+        assertThat(response.position()).isEqualTo(10L);
+        assertThat(response.waitTime()).isEqualTo(10L);
     }
 
     @Test
@@ -80,16 +80,16 @@ class QueueServiceTests {
         Long dealId = 1L;
         Long userId = 100L;
 
-        given(redisTemplate.opsForZSet()).willReturn(zsetOperations);
-        given(zsetOperations.add(anyString(), any(), anyDouble())).willReturn(false);
-        given(zsetOperations.rank(anyString(), any())).willReturn(3L);
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.add(anyString(), any(), anyDouble())).willReturn(false);
+        given(zSetOps.rank(anyString(), any())).willReturn(3L);
 
         // when
         QueueResponse response = queueService.enterQueue(dealId, userId);
 
         // then
-        assertThat(response.queueStatusResponse().position()).isEqualTo(3L);
-        verify(zsetOperations).add(eq("queue:1"), eq(userId), anyDouble());
+        assertThat(response.position()).isEqualTo(3L);
+        verify(zSetOps).add(eq("queue:1"), eq("user:" + userId), anyDouble());
     }
 
     @Test
@@ -100,16 +100,63 @@ class QueueServiceTests {
         Long dealId2 = 2L;
         Long userId = 100L;
 
-        given(redisTemplate.opsForZSet()).willReturn(zsetOperations);
-        given(zsetOperations.add(anyString(), any(), anyDouble())).willReturn(true);
-        given(zsetOperations.rank(anyString(), any())).willReturn(0L);
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.add(anyString(), any(), anyDouble())).willReturn(true);
+        given(zSetOps.rank(anyString(), any())).willReturn(0L);
 
         // when
         queueService.enterQueue(dealId1, userId);
         queueService.enterQueue(dealId2, userId);
 
         // then
-        verify(zsetOperations).add(eq("queue:1"), eq(userId), anyDouble());
-        verify(zsetOperations).add(eq("queue:2"), eq(userId), anyDouble());
+        verify(zSetOps).add(eq("queue:1"), eq("user:" + userId), anyDouble());
+        verify(zSetOps).add(eq("queue:2"), eq("user:" + userId), anyDouble());
+    }
+
+    @Test
+    @DisplayName("대기열에 있으면 WAITING 반환")
+    void waitingQueue() {
+        // given
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.rank(anyString(), anyString())).willReturn(5L);
+
+        // when
+        QueueResponse response = queueService.getQueue(1L, 100L);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(QueueStatus.WAITING);
+    }
+
+    @Test
+    @DisplayName("진행큐에 있고 만료되지 않았다면 READY 반환")
+    void ProceedQueue() {
+        // given
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.rank(anyString(), anyString())).willReturn(null);
+        given(zSetOps.score(anyString(), anyString())).willReturn((double) System.currentTimeMillis() + 60000);
+
+        // when
+        QueueResponse response = queueService.getQueue(1L, 100L);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(QueueStatus.PROCEED);
+    }
+
+    @Test
+    @DisplayName("대기열 및 진행큐에 없거나 만료되었다면 EXPIRED 반환")
+    void expiredQueue() {
+        // given
+        given(stringRedisTemplate.opsForZSet()).willReturn(zSetOps);
+        given(zSetOps.rank(anyString(), anyString())).willReturn(null);
+        given(zSetOps.score(anyString(), anyString())).willReturn(null);
+
+        // when
+        QueueResponse response = queueService.getQueue(1L, 100L);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(QueueStatus.EXPIRED);
     }
 }
