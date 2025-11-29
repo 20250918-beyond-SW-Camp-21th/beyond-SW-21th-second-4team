@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { QueueResponse } from '../types/queue';
+import type { QueueResponse } from '../types/queue';
 import { queueService } from '../services/queueService';
 
 export const useQueue = (promotionId: number | null, userId: number | null) => {

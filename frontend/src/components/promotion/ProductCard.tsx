@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Promotion } from '../../types/promotion';
+import type { Promotion } from '../../types/promotion';
 import { Badge } from '../common';
 import { CountdownTimer } from './CountdownTimer';
 

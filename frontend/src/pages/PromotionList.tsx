@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Promotion } from '../types/promotion';
+import type { Promotion } from '../types/promotion';
 import { promotionService } from '../services/promotionService';
 import { ProductCard } from '../components/promotion/ProductCard';
 

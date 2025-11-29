@@ -1,5 +1,5 @@
 import React from 'react';
-import { QueueResponse } from '../../types/queue';
+import type { QueueResponse } from '../../types/queue';
 import { Badge, Button } from '../common';
 import { useCountdown } from '../../hooks/useCountdown';
 
