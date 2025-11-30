@@ -1,28 +1,43 @@
 package com.ohgiraffers.timedeal.core.domain;
 
 import com.ohgiraffers.timedeal.storage.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "admins")
 public class Admin extends BaseEntity {
 
-    @Column(name="email", nullable = false, unique = true)
+    @Column(name="email", nullable = false, unique = true, length = 10)
     private String email;
 
-    @Column(name="password", nullable = false)
+    @Column(name="password", nullable = false, length = 10)
     private String password;
 
-    @Column(name="company", nullable = false)
+    @Column(name="company", nullable = false, length = 10)
     private String company;
 
+    // 양방향 매핑: 하나의 Admin이 여러 Product를 가짐
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
+
+    // 생성자 (등록 시 사용)
+    public Admin(String email, String password, String company) {
+        this.email = email;
+        this.password = password;
+        this.company = company;
+    }
+
+    // 수정 메서드
+    public void update(String email, String password, String company) {
+        this.email = email;
+        this.password = password;
+        this.company = company;
+    }
 }
