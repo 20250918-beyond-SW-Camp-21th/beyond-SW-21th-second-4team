@@ -28,7 +28,14 @@ public class PromotionController {
 
     @PostMapping("/api/v1/promotions")
     public ApiResult<?> save(@RequestBody PromotionRequest promotionRequest) {
-
+        promotionService.promotionSave(promotionRequest);
+        return ApiResult.success();
+    }
+    @PutMapping("/api/v1/promotions/{id}")
+    public ApiResult<?> update(
+            @PathVariable long id,
+            @RequestBody PromotionRequest promotionRequest) {
+        promotionService.promotionUpdateById(id,promotionRequest);
         return ApiResult.success();
     }
     @PutMapping("/api/v1/promotions")
@@ -38,17 +45,19 @@ public class PromotionController {
     }
 
     @DeleteMapping("/api/v1/promotions/{id}")
-    public ApiResult<?> deleteById(@RequestParam(name = "promotionId") Long promotionId) {
-        promotionService.deletePromotion(promotionId);
+    public ApiResult<?> deleteById(@PathVariable Long id) {
+        promotionService.deletePromotion(id);
         return ApiResult.success();
     }
-    @GetMapping("api/promotions")
+    @GetMapping("api/v1/promotions")
     public ApiResult<List<PromotionResponse>> getAllPromotion() {
         List<PromotionResponse> result = promotionService.findAll();
         return ApiResult.success(result);
     }
-    @GetMapping("api/v1/promtions")
-    public ApiResult<List<PromotionResponse>> getPromotionsStatusAll(@RequestParam (name = "promotionStatus") PromotionStatus promotionstatus) {
-        return ApiResult.success(promotionService.getPromotionsWithStatus(promotionstatus));
+    @GetMapping("api/v1/promtions/{promotionStatus}")
+    public ApiResult<List<PromotionResponse>> getPromotionsStatusAll(
+            @PathVariable PromotionStatus promotionStatus)
+    {
+        return ApiResult.success(promotionService.getPromotionsByStatus(promotionStatus));
     }
 }

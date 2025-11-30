@@ -26,20 +26,16 @@ public class PromotionService {
         this.promotionRepository = promotionRepository;
     }
 
-    public void findByProductId(Long productId) {
-        promotionRepository.findByProductId(productId);
-    }
-
     public void promotionSave(PromotionRequest pr) {
             AtomicReference<ResultType> createdSuccess = new AtomicReference<>(ResultType.ERROR);
 
             Promotion promotion =
-                    promotionRepository.findByProductId(pr.getProductID())
+                    promotionRepository.findByProductId(pr.getProductId())
                             .filter(p -> p.getPromotionStatus() != PromotionStatus.ENDED)
                             .orElseGet(() -> {
                                Promotion promotion1 = new Promotion(
                                        pr.getAdminId(),
-                                       pr.getProductID(),
+                                       pr.getProductId(),
                                        pr.getDiscountRate(),
                                        pr.getStartTime(),
                                        pr.getEndTime(),
@@ -53,7 +49,6 @@ public class PromotionService {
 
         @Transactional
     public void promotionUpdateStatusById(Long id) {
-        promotionRepository.promotionUpdateStatusById(id);
         Promotion promotion = promotionRepository.findById(id).get();
 
         PromotionStatus status = promotion.getPromotionStatus();
@@ -65,7 +60,7 @@ public class PromotionService {
                 break;
             case ACTIVE:
                 if (promotion.getEndTime().isAfter(LocalDateTime.now())) {
-                    promotion.setPromotionStatus(PromotionStatus.ENDED);
+                    promotion.changeStatus(PromotionStatus.ENDED);
                 }
                 break;
             default:
@@ -73,21 +68,62 @@ public class PromotionService {
         }
     }
 
-    public void deletePromotion(Long Id) {
-        int result = promotionRepository.deleteById(Id);
-        if (result > 0) {
-            //
+    @Transactional
+    public void promotionUpdateById(Long id, PromotionRequest req) {
+
+        Promotion promotion = promotionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Promotion not found: " + id));
+
+        if (promotion.getPromotionStatus() != PromotionStatus.SCHEDULER) {
+            throw new IllegalStateException( "현재 상태(" + promotion.getPromotionStatus() + ")에서는 수정할 수 없습니다. ");
         }
+
+        promotion.updatePromotion(
+                req.getAdminId(),
+                req.getProductId(),
+                req.getDiscountRate(),
+                req.getStartTime(),
+                req.getEndTime(),
+                req.getTotalQuantity()
+        );
+
+        promotionRepository.save(promotion);
     }
 
+
+    public void deletePromotion(Long Id) {
+        promotionRepository.deleteById(Id);
+    }
+
+
     public List<PromotionResponse> findAll(){
-        return (List<PromotionResponse>) promotionRepository.findAll().stream();
+        return promotionRepository.findAll().stream().map(p -> new PromotionResponse(
+                        p.getId(),
+                        p.getAdminId(),
+                        p.getProductId(),
+                        p.getDiscountRate(),
+                        p.getTotalQuantity(),
+                        p.getStartTime(),
+                        p.getEndTime(),
+                        ResultType.SUCCESS
+                ))
+                .toList();
 
     };
 
 
-    public List<PromotionResponse> getPromotionsWithStatus(PromotionStatus promotionStatus) {
-        return promotionRepository.findAllByPromotionStatus(promotionStatus);
+    public List<PromotionResponse> getPromotionsByStatus(PromotionStatus promotionStatus) {
+        return promotionRepository.findAllByPromotionStatus(promotionStatus).stream().map(p -> new PromotionResponse(
+                p.getId(),
+                p.getAdminId(),
+                p.getProductId(),
+                p.getDiscountRate(),
+                p.getTotalQuantity(),
+                p.getStartTime(),
+                p.getEndTime(),
+                ResultType.SUCCESS
+        ))
+                .toList();
 
     }
 }
