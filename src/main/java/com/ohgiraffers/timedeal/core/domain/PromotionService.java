@@ -41,6 +41,9 @@ public class PromotionService {
                                        pr.getEndTime(),
                                        pr.getTotalQuantity()
                                );
+                               if(pr.getStartTime().isAfter(LocalDateTime.now())) {
+                                promotion1.changeStatus(PromotionStatus.SCHEDULER);
+                               }
                                createdSuccess.set(ResultType.SUCCESS);
                                return promotionRepository.save(promotion1);
 
