@@ -7,11 +7,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "promotions")
@@ -43,7 +45,7 @@ public class Promotion extends BaseEntity {
 
     @Column(name = "promotion_status")
     @Enumerated(EnumType.STRING)
-    private PromotionStatus promotionStatus = PromotionStatus.ACTIVE;
+    private PromotionStatus promotionStatus;
 
     public Promotion(Long adminId, Long productId, Double discountRate, LocalDateTime startTime, LocalDateTime endTime, Integer totalQuantity) {
         this.adminId = adminId;
