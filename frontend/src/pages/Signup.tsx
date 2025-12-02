@@ -28,6 +28,8 @@ export const Signup: React.FC = () => {
       newErrors.password = '비밀번호를 입력해주세요.';
     } else if (formData.password.length < 6) {
       newErrors.password = '비밀번호는 최소 6자 이상이어야 합니다.';
+    } else if (!/[!@#$%^&*()_+=\-\[\]{};':"\\|,.<>/?]/.test(formData.password)) {
+      newErrors.password = '비밀번호에는 특수문자가 1개 이상 포함되어야 합니다.';
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -104,13 +106,16 @@ export const Signup: React.FC = () => {
           <Input
             type="password"
             label="비밀번호"
-            placeholder="6자 이상 입력하세요"
+            placeholder="6자 이상, 특수문자 포함 (예: Pass1234!)"
             value={formData.password}
             onChange={(e) => handleChange('password', e.target.value)}
             error={errors.password}
             fullWidth
             autoComplete="new-password"
           />
+          <p className="text-xs text-gray-500 mt-1">
+            * 특수문자 (!@#$%^&*() 등) 1개 이상 포함 필수
+          </p>
 
           <Input
             type="password"
