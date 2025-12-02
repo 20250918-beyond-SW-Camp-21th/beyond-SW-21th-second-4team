@@ -11,9 +11,18 @@ export interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
   const navigate = useNavigate();
 
-  const isSoldOut = promotion.remainingQuantity === 0;
-  const stockPercentage = (promotion.remainingQuantity / promotion.totalQuantity) * 100;
+  // 백엔드에서 상품 정보를 제공하지 않으므로 기본값 사용
+  const soldQuantity = promotion.soldQuantity || 0;
+  const remainingQuantity = promotion.totalQuantity - soldQuantity;
+  const isSoldOut = remainingQuantity === 0;
+  const stockPercentage = (remainingQuantity / promotion.totalQuantity) * 100;
   const isLowStock = stockPercentage > 0 && stockPercentage <= 20;
+
+  // 임시 상품 정보 (실제로는 Product API를 별도로 조회해야 함)
+  const productName = promotion.productName || `상품 #${promotion.productId}`;
+  const productImage = promotion.productImage;
+  const originalPrice = promotion.originalPrice || 0;
+  const salePrice = promotion.salePrice || Math.round(originalPrice * (1 - promotion.discountRate / 100));
 
   const handleClick = () => {
     if (!isSoldOut) {
@@ -28,10 +37,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
     >
       {/* Product Image */}
       <div className="relative aspect-[2/1] overflow-hidden bg-bg-gray">
-        {promotion.productImage ? (
+        {productImage ? (
           <img
-            src={promotion.productImage}
-            alt={promotion.productName}
+            src={productImage}
+            alt={productName}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -64,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
           {!isSoldOut && isLowStock && (
             <Badge variant="limited">한정수량</Badge>
           )}
-          {promotion.status === 'ACTIVE' && !isSoldOut && (
+          {promotion.promotionStatus === 'ACTIVE' && !isSoldOut && (
             <Badge variant="new">진행중</Badge>
           )}
         </div>
@@ -84,23 +93,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
       <div className="p-4">
         {/* Product Name */}
         <h3 className="text-product-name text-text-primary mb-2 line-clamp-2 min-h-[3rem]">
-          {promotion.productName}
+          {productName}
         </h3>
 
         {/* Price Section */}
         <div className="flex items-baseline gap-2 mb-2">
           <span className="price-discount">{promotion.discountRate}%</span>
-          <span className="price-sale">{promotion.promotionPrice.toLocaleString()}원</span>
+          <span className="price-sale">{salePrice.toLocaleString()}원</span>
         </div>
 
-        <div className="price-original mb-3">
-          {promotion.originalPrice.toLocaleString()}원
-        </div>
+        {originalPrice > 0 && (
+          <div className="price-original mb-3">
+            {originalPrice.toLocaleString()}원
+          </div>
+        )}
 
         {/* Stock Info */}
         <div className="flex items-center justify-between text-sm">
           <span className="text-text-meta">
-            재고: {promotion.remainingQuantity} / {promotion.totalQuantity}
+            재고: {remainingQuantity} / {promotion.totalQuantity}
           </span>
           {!isSoldOut && (
             <div className="flex items-center text-primary-blue">
