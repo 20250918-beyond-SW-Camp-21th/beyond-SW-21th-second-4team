@@ -20,6 +20,9 @@ export interface SignUpRequest {
 }
 
 export interface SignInResponse {
-  user: User;
-  token?: string;
+  userId: number;
+  email: string;
+  name: string;
+  balance: number;
+  token: string;
 }

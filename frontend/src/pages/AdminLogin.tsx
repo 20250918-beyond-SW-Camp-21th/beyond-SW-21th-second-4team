@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
-import { adminService } from '../services/adminService';
+import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
 
 export const AdminLogin = () => {
@@ -21,8 +21,20 @@ export const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const response = await adminService.login(formData);
-      login(response.user, response.token);
+      // Note: 백엔드에 관리자 전용 로그인 API가 없으므로 일반 로그인 사용
+      const response = await userService.signIn(formData.email, formData.password);
+
+      // SignInResponse를 User 형태로 변환
+      const user = {
+        id: response.userId,
+        email: response.email,
+        name: response.name,
+        balance: response.balance,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      login(user, response.token);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : '로그인에 실패했습니다.');
