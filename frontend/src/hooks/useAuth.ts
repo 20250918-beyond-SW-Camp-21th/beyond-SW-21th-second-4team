@@ -32,12 +32,22 @@ export const useAuth = () => {
   const signIn = async (email: string, password: string) => {
     try {
       const response = await userService.signIn(email, password);
-      setUser(response.user);
-      localStorage.setItem('userId', response.user.id.toString());
-      if (response.token) {
-        localStorage.setItem('authToken', response.token);
-      }
-      return response.user;
+
+      // SignInResponse를 User 형태로 변환
+      const userData: User = {
+        id: response.userId,
+        email: response.email,
+        name: response.name,
+        balance: response.balance,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      setUser(userData);
+      localStorage.setItem('userId', response.userId.toString());
+      localStorage.setItem('authToken', response.token);
+
+      return userData;
     } catch (error) {
       throw error;
     }
@@ -45,11 +55,18 @@ export const useAuth = () => {
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      const user = await userService.signUp(email, password, name);
-      return user;
+      await userService.signUp(email, password, name);
+      // 회원가입 성공 후 자동 로그인은 하지 않음
+      return;
     } catch (error) {
       throw error;
     }
+  };
+
+  const login = (user: User, token: string) => {
+    setUser(user);
+    localStorage.setItem('userId', user.id.toString());
+    localStorage.setItem('authToken', token);
   };
 
   const logout = () => {
@@ -63,6 +80,7 @@ export const useAuth = () => {
     loading,
     signIn,
     signUp,
+    login,
     logout,
   };
 };

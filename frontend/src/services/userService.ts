@@ -19,11 +19,25 @@ export const userService = {
   },
 
   /**
+   * Sign out user
+   */
+  async signOut(userId: number): Promise<void> {
+    const response = await api.post<ApiResult<void>>(
+      API_ENDPOINTS.USER_SIGNOUT,
+      null,
+      {
+        params: { userId },
+      }
+    );
+    return handleApiResponse(response.data);
+  },
+
+  /**
    * Sign up new user
    */
-  async signUp(email: string, password: string, name: string): Promise<User> {
+  async signUp(email: string, password: string, name: string): Promise<void> {
     const request: SignUpRequest = { email, password, name };
-    const response = await api.post<ApiResult<User>>(
+    const response = await api.post<ApiResult<void>>(
       API_ENDPOINTS.USER_SIGNUP,
       request
     );
