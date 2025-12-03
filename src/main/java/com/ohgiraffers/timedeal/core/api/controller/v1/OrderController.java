@@ -4,6 +4,7 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.request.OrderRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderResponse;
 import com.ohgiraffers.timedeal.core.domain.OrderService;
 import com.ohgiraffers.timedeal.core.support.response.ApiResult;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @Operation(summary="주문 생성")
     @PostMapping
     public ApiResult<?> createOrder(@RequestBody @Valid OrderRequest request) {
         orderService.createOrder(request);
