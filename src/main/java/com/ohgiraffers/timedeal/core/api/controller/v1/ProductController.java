@@ -22,7 +22,6 @@ public class ProductController {
 
     // 2. 상품 수정
     @PutMapping("/api/v1/products/{productid}")
-    // FIX: ApiResult<?>로 변경함
     public ApiResult<?> update(@PathVariable Long productid, @RequestBody ProductRequest request) {
         productService.update(productid, request);
         return ApiResult.success();
@@ -30,7 +29,6 @@ public class ProductController {
 
     // 3. 상품 삭제
     @DeleteMapping("/api/v1/products/{productid}")
-    // FIX: ApiResult<?>로 변경함
     public ApiResult<?> delete(@PathVariable Long productid) {
         productService.delete(productid);
         return ApiResult.success();
@@ -38,7 +36,6 @@ public class ProductController {
 
     // 4. 전체 조회
     @GetMapping("/api/v1/products")
-    // 💡 FIX 2: 반환 타입을 ProductListResponse로 변경
     public ApiResult<ProductListResponse> findAll() {
         // productService.findAll()이 ProductListResponse 객체를 반환하므로 타입 일치
         return ApiResult.success(productService.findAll());

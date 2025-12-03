@@ -26,9 +26,8 @@ public class Category extends BaseEntity {
     }
 
     public void changeStatus(EntityStatus status) {
-        super.deleted(); // BaseEntity 메서드 활용 가능
-        this.active();   // 필요시 ACTIVE로 변경 가능
-        // 또는 직접 status 필드에 할당하려면 BaseEntity에 setter가 필요
+        super.deleted();
+        this.active();
     }
 
 }
