@@ -28,7 +28,14 @@ public class OrderDetail extends BaseEntity {
     private Double unitPrice;
 
     @Column(name = "subtotal", nullable = false)
-    private Double subtotal;
+    private Integer subtotal;
+
+    @Column(name = "promotion_name", length = 255, nullable = false)
+    private String promotionName;
+
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
 
     public static OrderDetail of(Long orderId, Long promotionId, Integer quantity, Integer unitPrice) {
         OrderDetail detail = new OrderDetail();
@@ -36,7 +43,7 @@ public class OrderDetail extends BaseEntity {
         detail.promotionId = promotionId;
         detail.quantity = quantity;
         detail.unitPrice = unitPrice.doubleValue();
-        detail.subtotal = unitPrice.doubleValue() * quantity;
+        detail.subtotal = unitPrice* quantity;
         return detail;
     }
 

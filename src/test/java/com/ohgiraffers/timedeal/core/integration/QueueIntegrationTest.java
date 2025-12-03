@@ -1,9 +1,11 @@
 package com.ohgiraffers.timedeal.core.integration;
 
+import com.ohgiraffers.timedeal.core.api.controller.scheduler.QueueScheduler;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
 import com.ohgiraffers.timedeal.core.domain.QueueService;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.support.IntegrationTestBase;
+import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,9 @@ public class QueueIntegrationTest extends IntegrationTestBase {
 
     @Autowired
     private QueueService queueService;
+
+    @Autowired
+    private QueueScheduler queueScheduler;
 
     @Nested
     @DisplayName("대기열 전체 플로우")
@@ -50,9 +55,8 @@ public class QueueIntegrationTest extends IntegrationTestBase {
 
             // 모든 응답이 유효한지 확인
             for (QueueResponse response : responses) {
-                assertThat(response.token()).isNotBlank();
-                assertThat(response.queueStatusResponse().status()).isEqualTo(QueueStatus.WAITING);
-                assertThat(response.queueStatusResponse().position()).isBetween(0L, 99L);
+                assertThat(response.status()).isEqualTo(QueueStatus.WAITING);
+                assertThat(response.position()).isBetween(0L, 99L);
             }
         }
 
@@ -76,8 +80,8 @@ public class QueueIntegrationTest extends IntegrationTestBase {
             QueueResponse secondEnter = queueService.enterQueue(dealId, userId);
 
             // then
-            assertThat(firstEnter.queueStatusResponse().position()).isEqualTo(10L);
-            assertThat(secondEnter.queueStatusResponse().position()).isEqualTo(10L);
+            assertThat(firstEnter.position()).isEqualTo(10L);
+            assertThat(secondEnter.position()).isEqualTo(10L);
 
             Long size = redisTemplate.opsForZSet().size("queue:1");
             assertThat(size).isEqualTo(11L);
@@ -96,8 +100,8 @@ public class QueueIntegrationTest extends IntegrationTestBase {
             QueueResponse response2 = queueService.enterQueue(dealId2, userId);
 
             // then
-            assertThat(response1.queueStatusResponse().position()).isEqualTo(0L);
-            assertThat(response2.queueStatusResponse().position()).isEqualTo(0L);
+            assertThat(response1.position()).isEqualTo(0L);
+            assertThat(response2.position()).isEqualTo(0L);
 
             // Redis에 두 개의 독립적인 key가 생성됨
             Set<String> keys = redisTemplate.keys("queue:*");
@@ -117,10 +121,49 @@ public class QueueIntegrationTest extends IntegrationTestBase {
             }
 
             // then
-            assertThat(responses.get(0).queueStatusResponse().waitTime()).isEqualTo(0L);
-            assertThat(responses.get(9).queueStatusResponse().waitTime()).isEqualTo(0L);
-            assertThat(responses.get(10).queueStatusResponse().waitTime()).isEqualTo(10L);
-            assertThat(responses.get(24).queueStatusResponse().waitTime()).isEqualTo(20L);
+            assertThat(responses.get(0).waitTime()).isEqualTo(0L);
+            assertThat(responses.get(9).waitTime()).isEqualTo(0L);
+            assertThat(responses.get(10).waitTime()).isEqualTo(10L);
+            assertThat(responses.get(24).waitTime()).isEqualTo(20L);
+        }
+
+        @Test
+        @DisplayName("대기열에서 진행큐로 이동")
+        void waitingQueue() {
+            // given
+            ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
+            String waitQueueKey = TimedealKeys.waitQueue(1L);
+            String proceedQueueKey = TimedealKeys.proceedQueue(1L);
+
+            for(int id = 1; id <= 15; id++) {
+                String userStr = "user:" + id;
+                zSetOps.add(waitQueueKey, userStr, System.currentTimeMillis() + id);
+            }
+
+            // when
+            queueScheduler.scheduled();
+
+            // then
+            assertThat(zSetOps.size(waitQueueKey)).isEqualTo(5);
+            assertThat(zSetOps.size(proceedQueueKey)).isEqualTo(10);
+        }
+
+        @Test
+        @DisplayName("만료된 유저 진행큐에서 제거")
+        void expiredQueue() {
+            // given
+            ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
+            String proceedQueueKey = TimedealKeys.proceedQueue(1L);
+
+            zSetOps.add(proceedQueueKey, "user:1", System.currentTimeMillis() - 1000);
+            zSetOps.add(proceedQueueKey, "user:2", System.currentTimeMillis() + 300000);
+
+            // when
+            queueScheduler.scheduled();
+
+            // then
+            assertThat(zSetOps.score(proceedQueueKey, "user:1")).isNull();
+            assertThat(zSetOps.score(proceedQueueKey, "user:2")).isNotNull();
         }
 
         @Test

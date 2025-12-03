@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/testdb
-    username: test
-    password: test
+    url: jdbc:mariadb://localhost:3307/timedealdb
+    username: timedeal
+    password: timedeal
 
   jpa:
     hibernate:
