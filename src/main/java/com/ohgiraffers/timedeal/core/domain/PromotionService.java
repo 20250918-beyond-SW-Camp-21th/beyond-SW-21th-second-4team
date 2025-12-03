@@ -101,14 +101,18 @@ public class PromotionService {
 
 
     public List<PromotionResponse> findAll(){
-        return promotionRepository.findAll().stream().map(p -> new PromotionResponse(
-                        p.getId(),
-                        p.getAdminId(),
-                        p.getProductId(),
-                        p.getDiscountRate(),
-                        p.getTotalQuantity(),
-                        p.getStartTime(),
-                        p.getEndTime()
+        return promotionRepository.findAllPromotions().stream().map(p -> new PromotionResponse(
+                        p.id(),
+                        p.adminId(),
+                        p.productId(),
+                        p.discountRate(),
+                        p.totalQuantity(),
+                        p.startTime(),
+                        p.endTime(),
+                        p.productName(),
+                        p.productImage(),
+                        p.originalPrice()
+
 
                 ))
                 .toList();
@@ -117,14 +121,17 @@ public class PromotionService {
 
 
     public List<PromotionResponse> getPromotionsByStatus(PromotionStatus promotionStatus) {
-        return promotionRepository.findAllByPromotionStatus(promotionStatus).stream().map(p -> new PromotionResponse(
-                p.getId(),
-                p.getAdminId(),
-                p.getProductId(),
-                p.getDiscountRate(),
-                p.getTotalQuantity(),
-                p.getStartTime(),
-                p.getEndTime()
+        return promotionRepository.findByPromotionStatus(promotionStatus).stream().map(p -> new PromotionResponse(
+                p.id(),
+                p.adminId(),
+                p.productId(),
+                p.discountRate(),
+                p.totalQuantity(),
+                p.startTime(),
+                p.endTime(),
+                p.productName(),
+                p.productImage(),
+                p.originalPrice()
         ))
                 .toList();
 

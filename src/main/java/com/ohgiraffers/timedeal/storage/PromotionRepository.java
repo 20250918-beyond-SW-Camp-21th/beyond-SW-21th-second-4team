@@ -72,9 +72,6 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
 
     List<Promotion> findAll();
 
-    List<RedisPromotionResponse> findPromotionIdAndTotalQuantityBYPromotionStatusisSCHEDULE();
-    List<RedisPromotionResponse> findPromotionIdAndTotalQuantityBYPromotionStatusisACTIVE();
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Promotion p where p.id = :id")
     public Optional<Promotion> findByIdWithPessimisticLock(Long id);
