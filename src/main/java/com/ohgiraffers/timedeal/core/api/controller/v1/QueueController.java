@@ -14,8 +14,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Tag(name = "대기열", description = "대기열 API")
 @RestController
@@ -58,5 +60,18 @@ public class QueueController {
             @RequestParam(value = "userId") Long userId
     ) {
         return ApiResult.success(queueService.getQueue(timedealId, userId));
+    }
+
+    @GetMapping(value = "/api/v1/queue/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "대기열 SSE 생성 및 반환", description = "대기열 SSE 생성 및 반환")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공적으로 SseEmitter 반환")
+    })
+    public SseEmitter getQueueSubscribe(
+            @Parameter(description = "유저 아이디", example = "1", required = true)
+            @Positive
+            @RequestParam(value = "userId") Long userId
+    ) {
+        return queueService.getQueueSubscribe(userId);
     }
 }

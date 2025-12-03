@@ -2,16 +2,24 @@ package com.ohgiraffers.timedeal.core.domain;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
+import com.ohgiraffers.timedeal.core.messaging.SseEmitterRegistry;
+import com.ohgiraffers.timedeal.core.support.error.CoreException;
+import com.ohgiraffers.timedeal.core.support.error.ErrorType;
 import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class QueueService {
     private final StringRedisTemplate stringRedisTemplate;
+    private final SseEmitterRegistry sseEmitterRegistry;
 
     public QueueResponse enterQueue(Long timedealId, Long userId) {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
@@ -22,20 +30,21 @@ public class QueueService {
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
         // proceed queue에 있는지 확인
-        if(zSetOps.rank(proceedQueueKey, userStr) != null) {
+        Double expireAt = zSetOps.score(proceedQueueKey, userStr);
+        if (expireAt != null && expireAt > System.currentTimeMillis()) {
             return new QueueResponse(0L, 0L, QueueStatus.PROCEED);
         }
 
         // 현재 시간을 UTC기준 Millisecond로 변환하여 score로 사용
         long score = System.currentTimeMillis();
-        
+
         // 신규유저는 생성되고 기존유저는 업데이트됨
         zSetOps.add(waitQueueKey, userStr, score);
 
         // User의 Queue상태를 저장
         Long position = zSetOps.rank(waitQueueKey, userStr);
         Long waitTime = getWaitTime(position);
-        return new QueueResponse(position, waitTime, QueueStatus.WAITING);
+        return new QueueResponse(position + 1, waitTime, QueueStatus.WAITING);
     }
 
     public QueueResponse getQueue(Long timedealId, Long userId) {
@@ -48,19 +57,23 @@ public class QueueService {
 
         // wait queue에 있는지 확인
         Long position = zSetOps.rank(waitQueueKey, userStr);
-        if(position != null) {
+        if (position != null) {
             Long waitTime = getWaitTime(position);
-            return new QueueResponse(position, waitTime, QueueStatus.WAITING);
+            return new QueueResponse(position + 1, waitTime, QueueStatus.WAITING);
         }
 
         // proceed queue에 있는지 확인
         Double expireAt = zSetOps.score(proceedQueueKey, userStr);
-        if(expireAt != null && expireAt > System.currentTimeMillis()) {
+        if (expireAt != null && expireAt > System.currentTimeMillis()) {
             return new QueueResponse(0L, 0L, QueueStatus.PROCEED);
         }
-        
+
         // 없다면 만료되었거나 시도된적이 없음
         return new QueueResponse(0L, 0L, QueueStatus.EXPIRED);
+    }
+
+    public SseEmitter getQueueSubscribe(Long userId) {
+        return sseEmitterRegistry.createEmitter(userId);
     }
 
     private Long getWaitTime(Long position) {
