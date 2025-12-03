@@ -65,7 +65,7 @@ public class QueueScheduler {
     /**
      * 완료 처리
      */
-    public void runProceedQueue(Long timedealId, List<QueueStatusEvent> events) {
+    private void runProceedQueue(Long timedealId, List<QueueStatusEvent> events) {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 dealId로 구분
@@ -108,7 +108,7 @@ public class QueueScheduler {
     /**
      * 대기열 처리
      */
-    public void runWaitQueue(Long timedealId, List<QueueStatusEvent> events) {
+    private void runWaitQueue(Long timedealId, List<QueueStatusEvent> events) {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 dealId로 구분
@@ -138,7 +138,7 @@ public class QueueScheduler {
     /**
      * 배치처리하여 전송
      */
-    public void runPublish(List<QueueStatusEvent> events) {
+    private void runPublish(List<QueueStatusEvent> events) {
         publisher.publishBatch(events);
     }
 }
