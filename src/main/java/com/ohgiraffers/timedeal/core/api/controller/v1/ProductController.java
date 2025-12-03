@@ -30,6 +30,7 @@ public class ProductController {
     // 3. 상품 삭제
     @DeleteMapping("/api/v1/products/{productid}")
     public ApiResult<?> delete(@PathVariable Long productid) {
+        System.out.println("=============>" + productid);
         productService.delete(productid);
         return ApiResult.success();
     }
