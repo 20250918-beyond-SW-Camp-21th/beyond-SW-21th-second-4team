@@ -34,15 +34,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse createOrder(OrderRequest orderRequest) {
+    public void createOrder(OrderRequest orderRequest) {
 
         // 요청 유효성 검증
-        if(orderRequest.getPromotionId() == null) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
-        }
-        if(orderRequest.getQuantity() <= 0) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
-        }
+        orderRequest.validate();
 
         // 상품 조회 + 비관적 락
         Promotion promotion = promotionRepository.findByIdWithPessimisticLock(orderRequest.getPromotionId())
@@ -84,9 +79,5 @@ public class OrderService {
                 promotion.getSalePrice().intValue()
         );
         orderDetailRepository.save(orderDetail);
-
-        System.out.println(orderDetail);
-
-        return new OrderResponse(orderDetail.getId(), 1); // quantity = 1
     }
 }
