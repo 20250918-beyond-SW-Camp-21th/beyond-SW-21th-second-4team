@@ -4,6 +4,8 @@ import com.ohgiraffers.timedeal.core.support.error.CoreException;
 import com.ohgiraffers.timedeal.core.support.error.ErrorType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderRequest {
 
+    @NotNull
     private Long promotionId;
+
+    @NotNull
+    @Positive
     private Integer quantity;
+
+    @NotNull
     private Long userId;
 
     public void validate() {
