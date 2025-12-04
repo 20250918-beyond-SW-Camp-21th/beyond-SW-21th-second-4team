@@ -3,6 +3,7 @@ package com.ohgiraffers.timedeal.core.domain;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.messaging.SseEmitterRegistry;
+import com.ohgiraffers.timedeal.core.support.constants.QueueConstants;
 import com.ohgiraffers.timedeal.core.support.error.CoreException;
 import com.ohgiraffers.timedeal.core.support.error.ErrorType;
 import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
@@ -28,7 +29,7 @@ public class QueueService {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 timedealId로 구분
-        String userStr = "user:" + userId;
+        String userStr = TimedealKeys.makeUser(userId);
         String waitQueueKey = TimedealKeys.waitQueue(timedealId);
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
@@ -47,8 +48,8 @@ public class QueueService {
 
             // User의 Queue상태를 저장
             Long position = zSetOps.rank(waitQueueKey, userStr);
-            Long waitTime = getWaitTime(position);
-            return new QueueResponse(position + 1, waitTime, QueueStatus.WAITING);
+            Long waitingTime = getWaitingTime(timedealId, position);
+            return new QueueResponse(position + 1, waitingTime, QueueStatus.WAITING);
 
         } catch (RedisConnectionFailureException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
@@ -59,7 +60,7 @@ public class QueueService {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 timedealId로 구분
-        String userStr = "user:" + userId;
+        String userStr = TimedealKeys.makeUser(userId);
         String waitQueueKey = TimedealKeys.waitQueue(timedealId);
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
@@ -67,8 +68,8 @@ public class QueueService {
             // wait queue에 있는지 확인
             Long position = zSetOps.rank(waitQueueKey, userStr);
             if (position != null) {
-                Long waitTime = getWaitTime(position);
-                return new QueueResponse(position + 1, waitTime, QueueStatus.WAITING);
+                Long waitingTime = getWaitingTime(timedealId, position);
+                return new QueueResponse(position + 1, waitingTime, QueueStatus.WAITING);
             }
 
             // proceed queue에 있는지 확인
@@ -89,14 +90,26 @@ public class QueueService {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 timedealId로 구분
-        String userStr = "user:" + userId;
+        String userStr = TimedealKeys.makeUser(userId);
         String waitQueueKey = TimedealKeys.waitQueue(timedealId);
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
         // 유저를 특정 대기열에서 삭제
         try {
+            Double expireAt = zSetOps.score(proceedQueueKey, userStr);
+
             Long waitRemoved = zSetOps.remove(waitQueueKey, userStr);
             Long proceedRemoved = zSetOps.remove(proceedQueueKey, userStr);
+
+            if(proceedRemoved != null && proceedRemoved > 0 && expireAt != null) {
+                long remainingTimeMs = expireAt.longValue() - System.currentTimeMillis();
+                long usedTimeMs = QueueConstants.PROCEED_QUEUE_TTL_MILLIS - remainingTimeMs;
+
+                if (usedTimeMs > 0) {
+                    recordProcessingTime(timedealId, usedTimeMs);
+                }
+            }
+
             return (waitRemoved != null && waitRemoved > 0) || (proceedRemoved != null && proceedRemoved > 0);
 
         } catch (RedisConnectionFailureException e) {
@@ -108,11 +121,11 @@ public class QueueService {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
 
         // key값을 timedealId로 구분
-        String userStr = "user:" + userId;
+        String userStr = TimedealKeys.makeUser(userId);
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
-        // proceed queue에 있는지 확인
         try {
+            // proceed queue에 있는지 확인
             Double expireAt = zSetOps.score(proceedQueueKey, userStr);
             if (expireAt == null) {
                 throw new CoreException(ErrorType.QUEUE_NOT_FOUND);
@@ -122,16 +135,41 @@ public class QueueService {
             if (expireAt < System.currentTimeMillis()) {
                 throw new CoreException(ErrorType.QUEUE_EXPIRED);
             }
+
         } catch (RedisConnectionFailureException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
         }
     }
 
+    public void recordProcessingTime(Long timedealId, long processingTimeMs) {
+        // key값을 timedealId로 구분
+        String historyQueueKey = TimedealKeys.historyQueue(timedealId);
+
+        stringRedisTemplate.opsForList().leftPush(historyQueueKey, String.valueOf(processingTimeMs));
+        stringRedisTemplate.opsForList().trim(historyQueueKey, 0, QueueConstants.PROCEED_QUEUE_CAPACITY - 1);
+    }
+
+    public long getWaitingTime(Long timedealId, long position) {
+        if (position <= 0) return 0;
+
+        // key값을 timedealId로 구분
+        String historyQueueKey = TimedealKeys.historyQueue(timedealId);
+        List<String> history = stringRedisTemplate.opsForList().range(historyQueueKey, 0, -1);
+
+        double avgMs = QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS;
+        if (history != null && !history.isEmpty()) {
+            avgMs = history.stream()
+                    .mapToLong(Long::parseLong)
+                    .average()
+                    .orElse(QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS);
+        }
+
+        return (long) ((position - 1) * avgMs / 1000);
+    }
+
+
     public SseEmitter getQueueSubscribe(Long userId) {
         return sseEmitterRegistry.createEmitter(userId);
     }
 
-    private Long getWaitTime(Long position) {
-        return (position / 10) * 10;
-    }
 }

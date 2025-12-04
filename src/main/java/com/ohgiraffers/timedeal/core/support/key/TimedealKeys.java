@@ -14,11 +14,23 @@ package com.ohgiraffers.timedeal.core.support.key;
 public class TimedealKeys {
     private static final String PREFIX = "timedeal";
 
+    public static String makeUser(Long userId) {
+        return "user:" + userId;
+    }
+
+    public static Long getUser(String user) {
+        return Long.parseLong(user.split(":")[1]);
+    }
+
     public static String waitQueue(Long timedealId) {
         return PREFIX + ":" + timedealId + ":wait-queue";
     }
 
     public static String proceedQueue(Long timedealId) {
         return PREFIX + ":" + timedealId + ":proceed-queue";
+    }
+
+    public static String historyQueue(Long timedealId) {
+        return PREFIX + ":" + timedealId + ":history-queue";
     }
 }

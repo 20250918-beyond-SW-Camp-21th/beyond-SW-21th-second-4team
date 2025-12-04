@@ -4,6 +4,7 @@ import com.ohgiraffers.timedeal.core.domain.QueueService;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.api.controller.v1.message.QueueStatusEvent;
 import com.ohgiraffers.timedeal.core.messaging.QueueStatusPublisher;
+import com.ohgiraffers.timedeal.core.support.constants.QueueConstants;
 import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,7 +27,7 @@ public class QueueScheduler {
     /**
      * 대기열 처리를 10초마다 처리한다
      */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = QueueConstants.QUEUE_SCHEDULER_INTERVAL_MILLIS)
     public void scheduled() {
 
         // 활성화된 프로모션 조회
@@ -76,8 +77,19 @@ public class QueueScheduler {
         long now = System.currentTimeMillis();
         zSetOps.removeRangeByScore(proceedQueueKey, 0, now);
 
+        // proceed queue의 크기 구하기
+        Long count = zSetOps.size(proceedQueueKey);
+        if(count == null) {
+            return;
+        }
+
         // wait queue에서 10명씩 처리
-        Set<String> users = zSetOps.range(waitQueueKey, 0, 9);
+        long available = QueueConstants.PROCEED_QUEUE_CAPACITY - count;
+        if(available <= 0) {
+            return;
+        }
+
+        Set<String> users = zSetOps.range(waitQueueKey, 0, available - 1);
         if (users == null || users.isEmpty()) {
             return;
         }
@@ -86,8 +98,8 @@ public class QueueScheduler {
         for (String userStr : users) {
             if (zSetOps.rank(proceedQueueKey, userStr) == null) {
 
-                long userId = Long.parseLong(userStr.split(":")[1]);
-                long expireAt = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5);
+                long userId = TimedealKeys.getUser(userStr);
+                long expireAt = System.currentTimeMillis() + QueueConstants.PROCEED_QUEUE_TTL_MILLIS;
                 zSetOps.add(proceedQueueKey, userStr, expireAt);
 
                 QueueStatusEvent event = new QueueStatusEvent(
@@ -116,11 +128,14 @@ public class QueueScheduler {
 
         // 대기열에 있는 유저 모두 출력
         Set<String> users = zSetOps.range(waitQueueKey, 0, -1);
+        if(users == null || users.isEmpty()) {
+            return;
+        }
 
         long position = 1;
         long total = users.size();
         for (String userStr : users) {
-            long userId = Long.parseLong(userStr.split(":")[1]);
+            long userId = TimedealKeys.getUser(userStr);
 
             QueueStatusEvent event = new QueueStatusEvent(
                     userId,
