@@ -1,6 +1,8 @@
 package com.ohgiraffers.timedeal.core.domain;
 
 
+import com.ohgiraffers.timedeal.core.support.error.CoreException;
+import com.ohgiraffers.timedeal.core.support.error.ErrorType;
 import com.ohgiraffers.timedeal.storage.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +44,7 @@ public class User extends BaseEntity {
     }
     public void decreaseMoney(Long salePrice) {
         if(this.money < salePrice) {
-            throw new IllegalArgumentException("잔액이 부족합니다.");
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
         this.money -= salePrice;
     }

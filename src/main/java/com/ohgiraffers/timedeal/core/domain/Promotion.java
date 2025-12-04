@@ -2,6 +2,8 @@ package com.ohgiraffers.timedeal.core.domain;
 
 import com.ohgiraffers.timedeal.core.enums.EntityStatus;
 import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
+import com.ohgiraffers.timedeal.core.support.error.CoreException;
+import com.ohgiraffers.timedeal.core.support.error.ErrorType;
 import com.ohgiraffers.timedeal.storage.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,6 +49,7 @@ public class Promotion extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PromotionStatus promotionStatus;
 
+
     public Promotion(Long adminId, Long productId, Double discountRate, LocalDateTime startTime, LocalDateTime endTime, Integer totalQuantity) {
         this.adminId = adminId;
         this.productId = productId;
@@ -62,7 +65,7 @@ public class Promotion extends BaseEntity {
 
     public void increaseSoldQuantity() {
         if(this.soldQuantity > this.totalQuantity) {
-            throw new IllegalArgumentException("재고가 모두 소진되었습니다.");
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
         this.soldQuantity += 1;
     }
