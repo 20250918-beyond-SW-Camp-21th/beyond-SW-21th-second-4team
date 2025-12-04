@@ -36,11 +36,6 @@ public class PromotionController {
         promotionService.promotionUpdateById(id,promotionRequest);
         return ApiResult.success();
     }
-    @PutMapping("/api/v1/promotions")
-    public ApiResult<?> updateStatus(@RequestParam(name = "id") Long id) {
-        promotionService.promotionUpdateStatusById(id);
-        return ApiResult.success();
-    }
 
     @DeleteMapping("/api/v1/promotions/{id}")
     public ApiResult<?> deleteById(@PathVariable Long id) {
