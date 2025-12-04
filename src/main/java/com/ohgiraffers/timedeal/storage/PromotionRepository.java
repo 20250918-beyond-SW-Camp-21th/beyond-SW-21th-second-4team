@@ -30,6 +30,7 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
          pm.id
         ,pm.adminId
         ,pm.productId
+        ,pm.salePrice
         ,pm.discountRate
         ,pm.totalQuantity
         ,pm.startTime
@@ -58,6 +59,7 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
     pm.id
         ,pm.adminId
         ,pm.productId
+        ,null
         ,pm.discountRate
         ,pm.totalQuantity
         ,pm.startTime
@@ -75,5 +77,4 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Promotion p where p.id = :id")
     public Optional<Promotion> findByIdWithPessimisticLock(Long id);
-
 }

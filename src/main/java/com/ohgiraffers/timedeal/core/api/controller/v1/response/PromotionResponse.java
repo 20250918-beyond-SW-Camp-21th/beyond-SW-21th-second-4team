@@ -14,6 +14,7 @@ public record PromotionResponse (
         Long id,
         Long adminId,
         Long productId,
+        Integer salePrice,
         Double discountRate,
         Integer totalQuantity,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

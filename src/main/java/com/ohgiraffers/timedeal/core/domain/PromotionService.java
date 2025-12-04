@@ -6,31 +6,34 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.response.RedisPromotionRe
 import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
 import com.ohgiraffers.timedeal.core.support.response.ApiResult;
 import com.ohgiraffers.timedeal.core.support.response.ResultType;
+import com.ohgiraffers.timedeal.storage.ProductRepository;
 import com.ohgiraffers.timedeal.storage.PromotionRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ohgiraffers.timedeal.core.support.response.ApiResult.success;
 
 @Service
+@RequiredArgsConstructor
 public class PromotionService {
     private final PromotionRepository promotionRepository;
+    private final ProductRepository  productRepository;
 
-    @Autowired
-    public PromotionService(PromotionRepository promotionRepository) {
-        this.promotionRepository = promotionRepository;
-    }
-
+    //프로모션 생성(이미 진행하고있는 프로모션이 있나 비교)
     public void promotionSave(PromotionRequest pr) {
             AtomicReference<ResultType> createdSuccess = new AtomicReference<>(ResultType.ERROR);
 
-            Promotion promotion =
+        Product product = productRepository.findById(pr.getProductId()).orElseThrow();
+
+        Promotion promotion =
                     promotionRepository.findByProductId(pr.getProductId())
                             .filter(p -> p.getPromotionStatus() != PromotionStatus.ENDED)
                             .orElseGet(() -> {
@@ -42,6 +45,7 @@ public class PromotionService {
                                        pr.getEndTime(),
                                        pr.getTotalQuantity()
                                );
+                               promotion1.setSalePrice((int) (product.getPrice() * promotion1.getDiscountRate()));
                                if(pr.getStartTime().isAfter(LocalDateTime.now())) {
                                 promotion1.changeStatus(PromotionStatus.SCHEDULER);
                                }
@@ -49,27 +53,6 @@ public class PromotionService {
                                return promotionRepository.save(promotion1);
 
                             });
-        }
-
-        @Transactional
-    public void promotionUpdateStatusById(Long id) {
-        Promotion promotion = promotionRepository.findById(id).get();
-
-        PromotionStatus status = promotion.getPromotionStatus();
-        switch (status) {
-            case SCHEDULER:
-                if (promotion.getStartTime().isAfter(LocalDateTime.now())) {
-                    promotion.changeStatus(PromotionStatus.ACTIVE);
-                }
-                break;
-            case ACTIVE:
-                if (promotion.getEndTime().isAfter(LocalDateTime.now())) {
-                    promotion.changeStatus(PromotionStatus.ENDED);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     @Transactional
@@ -105,6 +88,7 @@ public class PromotionService {
                         p.id(),
                         p.adminId(),
                         p.productId(),
+                        p.salePrice(),
                         p.discountRate(),
                         p.totalQuantity(),
                         p.startTime(),
@@ -125,6 +109,7 @@ public class PromotionService {
                 p.id(),
                 p.adminId(),
                 p.productId(),
+                p.salePrice(),
                 p.discountRate(),
                 p.totalQuantity(),
                 p.startTime(),
@@ -146,6 +131,8 @@ public class PromotionService {
     public Promotion findPromotionById(long id) {
         return promotionRepository.findPromotionById(id);
     }
+    public List<Promotion> updateStatus(){
+        return promotionRepository.findAll();
+    }
 }
-
 
