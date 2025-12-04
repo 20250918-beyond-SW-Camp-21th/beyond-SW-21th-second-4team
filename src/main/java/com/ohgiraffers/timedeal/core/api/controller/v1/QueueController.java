@@ -51,13 +51,15 @@ public class QueueController {
             @ApiResponse(responseCode = "404", description = "타임딜을 찾을 수 없음")
     })
     public ApiResult<Boolean> leaveQueue(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "대기열 나가기 요청 정보",
-                    required = true
-            )
-            @RequestBody @Valid QueueEnterRequest request
+            @Parameter(description = "타임딜 아이디", example = "1", required = true)
+            @Positive
+            @RequestParam(value = "timedealId") Long timedealId,
+
+            @Parameter(description = "유저 아이디", example = "1", required = true)
+            @Positive
+            @RequestParam(value = "userId") Long userId
     ) {
-        return ApiResult.success(queueService.leaveQueue(request.timedealId(), request.userId()));
+        return ApiResult.success(queueService.leaveQueue(timedealId, userId));
     }
 
     @GetMapping("/api/v1/queue/verify")

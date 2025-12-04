@@ -15,7 +15,7 @@ public record   QueueResponse(
 
         @Schema(description = "대기열 예상 대기 시간 (초)", example = "60", requiredMode = REQUIRED)
         @PositiveOrZero
-        Long waitTime,
+        Long waitingTime,
 
         @Schema(description = "대기열 상태", example = "WAITING", allowableValues = {"WAITING", "PROCEED", "EXPIRED"}, requiredMode = REQUIRED)
         @NotNull
