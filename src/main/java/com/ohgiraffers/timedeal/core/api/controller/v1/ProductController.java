@@ -38,7 +38,6 @@ public class ProductController {
     // 4. 전체 조회
     @GetMapping("/api/v1/products")
     public ApiResult<ProductListResponse> findAll() {
-        // productService.findAll()이 ProductListResponse 객체를 반환하므로 타입 일치
         return ApiResult.success(productService.findAll());
     }
 
