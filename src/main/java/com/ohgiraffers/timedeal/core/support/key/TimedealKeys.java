@@ -27,7 +27,11 @@ public class TimedealKeys {
     }
 
     public static String proceedQueue(Long timedealId) {
-        return PREFIX + ":" + timedealId + ":stock";
+        return PREFIX + ":" + timedealId + ":proceed-queue";
+    }
+
+    public static String completedQueue(Long timedealId) {
+        return PREFIX + ":" + timedealId + ":completed-queue";
     }
 
     public static String setPromotion(Long timedealId) {return PREFIX + ":" + timedealId + ":set-promotion";}

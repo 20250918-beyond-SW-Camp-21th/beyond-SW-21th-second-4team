@@ -1,19 +1,18 @@
 package com.ohgiraffers.timedeal.core.domain;
 
+import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class StockService {
-
     private final StringRedisTemplate redisTemplate;
 
-    public StockService(StringRedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
     public boolean decreaseStock(Long promotionId, int quantity) {
-        String key = "stock:" + promotionId;
+        String key = TimedealKeys.setPromotion(promotionId);
 
         String value = redisTemplate.opsForValue().get(key);
         if (value == null) return false;
