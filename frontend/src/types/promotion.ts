@@ -13,9 +13,11 @@ export interface Promotion {
   productImage: string;     // 백엔드에서 제공 (imageUrl)
   originalPrice: number;    // 백엔드에서 제공
 
+  // 백엔드에서 제공
+  promotionStatus: PromotionStatus;
+
   // 프론트엔드 전용 (계산 또는 임시)
   soldQuantity?: number;    // 백엔드에서 제공 안함 - 필요시 별도 API
-  promotionStatus?: PromotionStatus;  // 백엔드에서 제공 안함 - 시간 기준 계산
 }
 
 // 백엔드 Enum: SCHEDULER, ACTIVE, ENDED
