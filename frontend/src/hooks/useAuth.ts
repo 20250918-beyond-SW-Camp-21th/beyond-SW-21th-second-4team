@@ -18,12 +18,22 @@ export const useAuth = () => {
 
   const loadUser = async (userId: number) => {
     try {
-      const userData = await userService.getUserProfile(userId);
+      const myPageData = await userService.getUserProfile(userId);
+      // MyPageResponse를 User 타입으로 변환
+      const userData: User = {
+        id: userId,
+        email: localStorage.getItem('userEmail') || '',
+        name: myPageData.name,
+        money: myPageData.money,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
       setUser(userData);
     } catch (error) {
       console.error('Failed to load user:', error);
       localStorage.removeItem('userId');
       localStorage.removeItem('authToken');
+      localStorage.removeItem('userEmail');
     } finally {
       setLoading(false);
     }
@@ -41,7 +51,17 @@ export const useAuth = () => {
       localStorage.setItem('userEmail', email);
 
       // 실제 사용자 정보 조회
-      const userData = await userService.getUserProfile(response.userId);
+      const myPageData = await userService.getUserProfile(response.userId);
+
+      // MyPageResponse를 User 타입으로 변환
+      const userData: User = {
+        id: response.userId,
+        email: email,
+        name: myPageData.name,
+        money: myPageData.money,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
       setUser(userData);
 
