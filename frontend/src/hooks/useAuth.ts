@@ -33,25 +33,23 @@ export const useAuth = () => {
     try {
       const response = await userService.signIn(email, password);
 
-      // 토큰 저장
+      console.log('로그인 응답:', response);
+
+      // 토큰과 userId 저장
       localStorage.setItem('authToken', response.token);
+      localStorage.setItem('userId', response.userId.toString());
       localStorage.setItem('userEmail', email);
 
-      // 임시 사용자 객체 생성 (실제로는 토큰에서 디코딩하거나 별도 API로 조회)
-      const userData: User = {
-        id: 1, // 임시 ID
-        email: email,
-        name: email.split('@')[0], // 이메일에서 이름 추출
-        balance: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      // 실제 사용자 정보 조회
+      const userData = await userService.getUserProfile(response.userId);
 
       setUser(userData);
-      localStorage.setItem('userId', '1'); // 임시
+
+      console.log('로그인 성공, 사용자 데이터:', userData);
 
       return userData;
     } catch (error) {
+      console.error('로그인 에러:', error);
       throw error;
     }
   };

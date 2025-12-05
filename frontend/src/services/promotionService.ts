@@ -2,15 +2,7 @@ import { api } from './api';
 import { API_ENDPOINTS } from '../config/api';
 import { handleApiResponse } from '../types/api';
 import type { ApiResult } from '../types/api';
-import type { Promotion, PromotionStatus } from '../types/promotion';
-
-export interface PromotionRequest {
-  productId: number;
-  promotionPrice: number;
-  totalQuantity: number;
-  startTime: string;
-  endTime: string;
-}
+import type { Promotion, PromotionStatus, PromotionRequest } from '../types/promotion';
 
 export const promotionService = {
   /**
