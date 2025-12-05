@@ -1,6 +1,5 @@
 package com.ohgiraffers.timedeal.core.domain;
 
-import com.ohgiraffers.timedeal.core.api.config.RedisConfig;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageOrderResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
@@ -11,7 +10,6 @@ import com.ohgiraffers.timedeal.storage.OrderDetailRepository;
 import com.ohgiraffers.timedeal.storage.OrderRepository;
 import com.ohgiraffers.timedeal.storage.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +54,7 @@ public class UserService {
 
     public Boolean verifyToken(Long userId, String token) {
         String getToken = redisTemplate.opsForValue().get("UserToken:" + userId);
-        if(getToken!= null && getToken.equals(token)){
-            return true;
-        }else{
-            return false;
-        }
+        return (getToken!= null && getToken.equals(token));
     }
 
     // 로그아웃 시 토큰 삭제
