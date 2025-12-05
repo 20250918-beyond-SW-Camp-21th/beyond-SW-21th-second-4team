@@ -2,6 +2,7 @@ package com.ohgiraffers.timedeal.core.api.controller.v1;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.LoginRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.SignUpRequest;
+import com.ohgiraffers.timedeal.core.api.controller.v1.request.VerifyTokenRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.SignInResponse;
@@ -70,8 +71,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "해당 유저를 찾을 수 없음")
     })
     @GetMapping("/api/v1/users/verify")
-    public ApiResult<Boolean> verifyToken(@RequestBody SignInResponse signInResponse){
-        return ApiResult.success(userService.verifyToken(signInResponse.userId(), signInResponse.token()));
+    public ApiResult<Boolean> verifyToken(@RequestBody VerifyTokenRequest verifyTokenRequest){
+        return ApiResult.success(userService.verifyToken(verifyTokenRequest.userId(), verifyTokenRequest.token()));
     }
 
 
