@@ -32,20 +32,12 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
               타임딜
             </Link>
             {user && (
-              <>
-                <Link
-                  to="/orders"
-                  className="text-text-secondary hover:text-sale-red transition-colors font-medium"
-                >
-                  주문내역
-                </Link>
-                <Link
-                  to="/me"
-                  className="text-text-secondary hover:text-sale-red transition-colors font-medium"
-                >
-                  마이페이지
-                </Link>
-              </>
+              <Link
+                to="/orders"
+                className="text-text-secondary hover:text-sale-red transition-colors font-medium"
+              >
+                주문내역
+              </Link>
             )}
           </nav>
 
