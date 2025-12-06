@@ -1,6 +1,6 @@
-package com.ohgiraffers.timedeal.storage;
+package com.ohgiraffers.common.entity;
 
-import com.ohgiraffers.timedeal.core.enums.EntityStatus;
+import com.ohgiraffers.common.enums.EntityStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;

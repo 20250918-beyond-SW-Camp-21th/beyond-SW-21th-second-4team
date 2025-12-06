@@ -1,6 +1,11 @@
-package com.ohgiraffers.timedeal.core.support.constants;
+package com.ohgiraffers.common.constants;
 
-public class QueueConstants {
+public final class QueueConstants {
+
+    private QueueConstants() {
+
+    }
+
     // 대기열 설정
     public static final long    QUEUE_SCHEDULER_INTERVAL_MILLIS = (10 * 1000L);
     public static final long    PROCEED_QUEUE_TTL_MILLIS = (5 * 60 * 1000L);

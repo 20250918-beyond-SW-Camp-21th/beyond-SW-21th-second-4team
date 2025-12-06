@@ -1,9 +1,9 @@
-package com.ohgiraffers.timedeal.core.support.response;
+package com.ohgiraffers.common.support.response;
 
 
 
-import com.ohgiraffers.timedeal.core.support.error.ErrorMessage;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.ErrorMessage;
+import com.ohgiraffers.common.support.error.ErrorType;
 import lombok.Getter;
 
 @Getter

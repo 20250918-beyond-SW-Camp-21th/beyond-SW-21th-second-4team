@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.support.key;
+package com.ohgiraffers.common.constants;
 
 /**
  *  Keys 규칙
