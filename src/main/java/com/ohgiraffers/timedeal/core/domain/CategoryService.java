@@ -3,9 +3,8 @@ package com.ohgiraffers.timedeal.core.domain;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.CategoryRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.CategoryResponse;
 import com.ohgiraffers.timedeal.storage.CategoryRepository;
-import com.ohgiraffers.timedeal.core.enums.EntityStatus;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

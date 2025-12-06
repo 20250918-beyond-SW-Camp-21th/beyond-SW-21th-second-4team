@@ -1,12 +1,11 @@
 package com.ohgiraffers.timedeal.core.domain;
 
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
-import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
+import com.ohgiraffers.common.constants.TimedealKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 

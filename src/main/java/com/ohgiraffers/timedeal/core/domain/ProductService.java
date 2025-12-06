@@ -3,12 +3,11 @@ package com.ohgiraffers.timedeal.core.domain;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.ProductRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.ProductListResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.ProductResponse;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.AdminResponse;
 import com.ohgiraffers.timedeal.storage.AdminRepository;
 import com.ohgiraffers.timedeal.storage.CategoryRepository;
 import com.ohgiraffers.timedeal.storage.ProductRepository;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 

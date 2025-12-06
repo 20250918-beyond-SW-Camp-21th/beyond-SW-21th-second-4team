@@ -5,7 +5,7 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
 import com.ohgiraffers.timedeal.core.domain.QueueService;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.support.IntegrationTestBase;
-import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
+import com.ohgiraffers.common.constants.TimedealKeys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -2,9 +2,9 @@ package com.ohgiraffers.timedeal.core.domain;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.OrderRequest;
 import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
-import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
+import com.ohgiraffers.common.constants.TimedealKeys;
 import com.ohgiraffers.timedeal.storage.OrderDetailRepository;
 import com.ohgiraffers.timedeal.storage.OrderRepository;
 import com.ohgiraffers.timedeal.storage.ProductRepository;
@@ -13,8 +13,6 @@ import com.ohgiraffers.timedeal.storage.UserRepository;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

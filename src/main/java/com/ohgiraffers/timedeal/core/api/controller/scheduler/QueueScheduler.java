@@ -4,8 +4,8 @@ import com.ohgiraffers.timedeal.core.domain.QueueService;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.api.controller.v1.message.QueueStatusEvent;
 import com.ohgiraffers.timedeal.core.messaging.QueueStatusPublisher;
-import com.ohgiraffers.timedeal.core.support.constants.QueueConstants;
-import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
+import com.ohgiraffers.common.constants.QueueConstants;
+import com.ohgiraffers.common.constants.TimedealKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor

@@ -7,7 +7,7 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.SignInResponse;
 import com.ohgiraffers.timedeal.core.domain.UserService;
-import com.ohgiraffers.timedeal.core.support.response.ApiResult;
+import com.ohgiraffers.common.support.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

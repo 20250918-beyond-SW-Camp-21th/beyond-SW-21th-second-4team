@@ -1,6 +1,6 @@
 package com.ohgiraffers.timedeal.core.domain;
 
-import com.ohgiraffers.timedeal.storage.BaseEntity;
+import com.ohgiraffers.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

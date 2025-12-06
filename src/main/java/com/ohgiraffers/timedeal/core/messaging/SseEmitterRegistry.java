@@ -1,7 +1,7 @@
 package com.ohgiraffers.timedeal.core.messaging;
 
 import com.ohgiraffers.timedeal.core.api.controller.v1.message.QueueStatusEvent;
-import com.ohgiraffers.timedeal.core.support.key.TimedealChannels;
+import com.ohgiraffers.common.constants.TimedealChannels;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

@@ -5,12 +5,10 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.response.PromotionRespons
 import com.ohgiraffers.timedeal.core.domain.Promotion;
 import com.ohgiraffers.timedeal.core.domain.PromotionService;
 import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
-import com.ohgiraffers.timedeal.core.support.response.ApiResult;
-import com.ohgiraffers.timedeal.storage.PromotionRepository;
+import com.ohgiraffers.common.support.response.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.Name;
 import java.util.List;
 
 @RestController

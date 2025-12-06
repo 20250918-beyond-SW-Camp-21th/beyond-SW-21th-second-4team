@@ -4,7 +4,7 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.request.ProductRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.ProductListResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.ProductResponse;
 import com.ohgiraffers.timedeal.core.domain.ProductService;
-import com.ohgiraffers.timedeal.core.support.response.ApiResult;
+import com.ohgiraffers.common.support.response.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
