@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.support.key;
+package com.ohgiraffers.common.constants;
 
 public class TimedealChannels {
     private static final String QUEUE_STATUS_PREFIX = "timedeal:queue:status:";

@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.api.config;
+package com.ohgiraffers.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

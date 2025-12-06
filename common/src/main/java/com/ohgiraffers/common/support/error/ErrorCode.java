@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.support.error;
+package com.ohgiraffers.common.support.error;
 
 public enum ErrorCode {
 
