@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="QueueApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="Timedeal.queue.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.ohgiraffers.queue.QueueApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
