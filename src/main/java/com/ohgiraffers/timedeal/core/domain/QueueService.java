@@ -3,12 +3,10 @@ package com.ohgiraffers.timedeal.core.domain;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.QueueResponse;
 import com.ohgiraffers.timedeal.core.enums.QueueStatus;
 import com.ohgiraffers.timedeal.core.messaging.SseEmitterRegistry;
-import com.ohgiraffers.timedeal.core.support.constants.QueueConstants;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
-import com.ohgiraffers.timedeal.core.support.key.TimedealKeys;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import com.ohgiraffers.common.constants.QueueConstants;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
+import com.ohgiraffers.common.constants.TimedealKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,7 +14,6 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

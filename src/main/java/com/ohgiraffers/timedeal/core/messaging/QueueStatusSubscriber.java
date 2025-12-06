@@ -3,8 +3,8 @@ package com.ohgiraffers.timedeal.core.messaging;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohgiraffers.timedeal.core.api.controller.v1.message.QueueStatusEvent;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

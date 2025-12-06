@@ -4,22 +4,19 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.request.PromotionRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.PromotionResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.RedisPromotionResponse;
 import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
-import com.ohgiraffers.timedeal.core.support.response.ApiResult;
-import com.ohgiraffers.timedeal.core.support.response.ResultType;
+import com.ohgiraffers.common.support.response.ApiResult;
+import com.ohgiraffers.common.support.response.ResultType;
 import com.ohgiraffers.timedeal.storage.ProductRepository;
 import com.ohgiraffers.timedeal.storage.PromotionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.ohgiraffers.timedeal.core.support.response.ApiResult.success;
+import static com.ohgiraffers.common.support.response.ApiResult.success;
 
 @Service
 @RequiredArgsConstructor

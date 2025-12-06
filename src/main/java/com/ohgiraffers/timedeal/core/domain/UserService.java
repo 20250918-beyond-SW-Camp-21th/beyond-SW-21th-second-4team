@@ -4,8 +4,8 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageOrderRespo
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.SignInResponse;
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import com.ohgiraffers.timedeal.storage.OrderDetailRepository;
 import com.ohgiraffers.timedeal.storage.OrderRepository;
 import com.ohgiraffers.timedeal.storage.UserRepository;

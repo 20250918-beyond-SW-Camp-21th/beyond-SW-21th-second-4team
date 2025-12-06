@@ -1,10 +1,8 @@
 package com.ohgiraffers.timedeal.core.api.controller.v1.request;
 
-import com.ohgiraffers.timedeal.core.support.error.CoreException;
-import com.ohgiraffers.timedeal.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
