@@ -7,6 +7,7 @@ public enum ErrorCode {
 
     // REDIS ERROR
     REDIS_ERROR,
+    REDIS_CONN_FAILURE,
 
     // QUEUE ERROR
     QUEUE_NOT_FOUND,

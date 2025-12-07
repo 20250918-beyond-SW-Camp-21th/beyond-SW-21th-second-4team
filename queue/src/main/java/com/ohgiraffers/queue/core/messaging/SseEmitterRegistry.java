@@ -1,5 +1,6 @@
 package com.ohgiraffers.queue.core.messaging;
 
+import com.ohgiraffers.common.constants.QueueConstants;
 import com.ohgiraffers.common.constants.TimedealChannels;
 import com.ohgiraffers.queue.core.api.controller.v1.message.QueueStatusEvent;
 import org.springframework.http.MediaType;
@@ -15,12 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SseEmitterRegistry {
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private static final long TIMEOUT = 60 * 1000L;
 
     public SseEmitter createEmitter(Long userId) {
         removeEmitter(userId);
 
-        SseEmitter emitter = new SseEmitter(TIMEOUT);
+        SseEmitter emitter = new SseEmitter(QueueConstants.SSE_TIMEOUT_MILLIS);
         emitter.onCompletion(() -> emitters.remove(userId));
         emitter.onTimeout(() -> emitters.remove(userId));
         emitter.onError(e -> emitters.remove(userId));

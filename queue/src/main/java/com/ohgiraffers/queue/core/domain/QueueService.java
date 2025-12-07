@@ -7,6 +7,8 @@ import com.ohgiraffers.queue.core.api.controller.v1.response.QueueStatusResponse
 import com.ohgiraffers.queue.core.enums.QueueStatus;
 import com.ohgiraffers.queue.core.messaging.SseEmitterRegistry;
 import com.ohgiraffers.queue.core.storage.QueueRepository;
+import io.lettuce.core.RedisCommandTimeoutException;
+import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
@@ -50,8 +52,10 @@ public class QueueService {
             Long waitingTime = waitTimeEstimator.estimateWaitSeconds(timedealId, position);
             return new QueueStatusResponse(position, totalWaiting, waitingTime, QueueStatus.WAITING);
 
-        } catch (RedisConnectionFailureException e) {
+        } catch (RedisConnectionFailureException | RedisCommandTimeoutException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
+        } catch (RedisException e) {
+            throw new CoreException(ErrorType.REDIS_ERROR);
         }
     }
 
@@ -79,8 +83,10 @@ public class QueueService {
             // 없다면 만료되었거나 시도된적이 없음
             return QueueStatusResponse.of(QueueStatus.EXPIRED);
 
-        } catch (RedisConnectionFailureException e) {
+        } catch (RedisConnectionFailureException | RedisCommandTimeoutException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
+        } catch (RedisException e) {
+            throw new CoreException(ErrorType.REDIS_ERROR);
         }
     }
 
@@ -106,8 +112,10 @@ public class QueueService {
             boolean proceedRemoved = queueRepository.removeProceedQueue(timedealId, userId);
             return (waitRemoved || proceedRemoved);
 
-        } catch (RedisConnectionFailureException e) {
+        } catch (RedisConnectionFailureException | RedisCommandTimeoutException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
+        } catch (RedisException e) {
+            throw new CoreException(ErrorType.REDIS_ERROR);
         }
     }
 
@@ -124,8 +132,10 @@ public class QueueService {
                 throw new CoreException(ErrorType.QUEUE_NOT_FOUND);
             }
 
-        } catch (RedisConnectionFailureException e) {
+        } catch (RedisConnectionFailureException | RedisCommandTimeoutException e) {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
+        } catch (RedisException e) {
+            throw new CoreException(ErrorType.REDIS_ERROR);
         }
     }
 
