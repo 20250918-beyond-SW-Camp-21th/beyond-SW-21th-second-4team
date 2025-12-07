@@ -41,13 +41,13 @@ public class WaitTimeEstimator {
      */
     public long estimateWaitSeconds(Long timedealId, long position) {
         if (position <= 0) {
-            return QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS;
+            return (QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS / 1000);
         }
 
         String historyQueueKey = TimedealKeys.historyQueue(timedealId);
         List<String> history = stringRedisTemplate.opsForList().range(historyQueueKey, 0, -1);
         if(history == null || history.isEmpty()) {
-            return QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS;
+            return (QueueConstants.DEFAULT_PROCESSING_TIME_MILLIS / 1000);
         }
 
         double avgMs = history.stream()
