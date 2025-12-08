@@ -1,7 +1,7 @@
-package com.ohgiraffers.timedeal.core.domain;
+package com.ohgiraffers.order.core.domain;
 
 import com.ohgiraffers.timedeal.core.enums.OrderStatus;
-import com.ohgiraffers.common.entity.BaseEntity;
+import com.ohgiraffers.timedeal.storage.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

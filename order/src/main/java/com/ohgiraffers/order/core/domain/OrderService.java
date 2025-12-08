@@ -1,15 +1,18 @@
-package com.ohgiraffers.timedeal.core.domain;
+package com.ohgiraffers.order.core.domain;
 
-import com.ohgiraffers.timedeal.core.api.controller.v1.request.OrderRequest;
-import com.ohgiraffers.timedeal.core.enums.PromotionStatus;
-import com.ohgiraffers.common.support.error.CoreException;
-import com.ohgiraffers.common.support.error.ErrorType;
-import com.ohgiraffers.common.constants.TimedealKeys;
-import com.ohgiraffers.timedeal.storage.OrderDetailRepository;
-import com.ohgiraffers.timedeal.storage.OrderRepository;
-import com.ohgiraffers.timedeal.storage.ProductRepository;
-import com.ohgiraffers.timedeal.storage.PromotionRepository;
-import com.ohgiraffers.timedeal.storage.UserRepository;
+import com.ohgiraffers.order.core.api.controller.v1.request.OrderRequest;
+import com.ohgiraffers.order.core.domain.Product;
+import com.ohgiraffers.order.core.domain.Promotion;
+import com.ohgiraffers.order.core.domain.StockService;
+import com.ohgiraffers.order.core.domain.User;
+import com.ohgiraffers.order.core.enums.PromotionStatus;
+import com.ohgiraffers.order.core.support.error.CoreException;
+import com.ohgiraffers.order.core.support.error.ErrorType;
+import com.ohgiraffers.order.storage.OrderDetailRepository;
+import com.ohgiraffers.order.storage.OrderRepository;
+import com.ohgiraffers.order.storage.ProductRepository;
+import com.ohgiraffers.order.storage.PromotionRepository;
+import com.ohgiraffers.order.storage.UserRepository;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,7 @@ public class OrderService {
 
     @Transactional
     public void createOrder(OrderRequest orderRequest) {
+
         // 요청 유효성 검증
         orderRequest.validate();
 
@@ -65,12 +69,6 @@ public class OrderService {
             // 유저 조회
             User user = userRepository.findById(orderRequest.getUserId())
                     .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
-
-            // 대기열을 통과 했는지 확인
-            stockService.validProcessedQueue(orderRequest.getUserId());
-
-            // 이미 구매했는지 확인
-            stockService.validCompleteQueue(orderRequest.getPromotionId(), orderRequest.getUserId());
 
             // 프로모션 상태 체크
             if (promotion.getPromotionStatus() != PromotionStatus.ACTIVE) {
@@ -91,12 +89,6 @@ public class OrderService {
             if(!stockAvailable){
                 throw new CoreException(ErrorType.DEFAULT_ERROR);
             }
-
-            // 대기열에서 지워서 다음 사용자가 입장할 수 있게 한다
-            stockService.deleteProcessedQueue(orderRequest.getUserId());
-
-            // 구매 셋에 넣어서 중복 구매를 막는다
-            stockService.addCompleteQueue(orderRequest.getPromotionId(), orderRequest.getUserId());
 
             // 구매 처리
             user.decreaseMoney(promotion.getSalePrice().longValue());     // 유저 잔액 차감

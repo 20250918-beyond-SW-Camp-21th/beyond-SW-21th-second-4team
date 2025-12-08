@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.api.controller.v1;
+package com.ohgiraffers.order.core.api.controller.v1;
 
 import com.ohgiraffers.timedeal.core.domain.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
