@@ -1,4 +1,4 @@
-package com.ohgiraffers.account.core.api.client;
+package com.ohgiraffers.account.core.api.config;
 
 import feign.RequestInterceptor;
 import jakarta.servlet.http.HttpServletRequest;

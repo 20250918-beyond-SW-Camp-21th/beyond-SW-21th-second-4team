@@ -1,6 +1,6 @@
 package com.ohgiraffers.account.core.api.controller.v1;
 
-import com.ohgiraffers.account.core.api.client.OrderServiceClient;
+import com.ohgiraffers.account.core.api.command.OrderClient;
 import com.ohgiraffers.account.core.api.controller.v1.request.LoginRequest;
 import com.ohgiraffers.account.core.api.controller.v1.request.SignUpRequest;
 import com.ohgiraffers.account.core.api.controller.v1.request.VerifyTokenRequest;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final OrderServiceClient orderServiceClient;
+    private final OrderClient orderServiceClient;
 
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인")
     @ApiResponses({
