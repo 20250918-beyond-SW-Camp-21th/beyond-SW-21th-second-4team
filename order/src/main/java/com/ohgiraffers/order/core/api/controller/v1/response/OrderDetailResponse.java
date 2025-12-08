@@ -1,6 +1,7 @@
-package com.ohgiraffers.timedeal.core.api.controller.v1.response;
+package com.ohgiraffers.order.core.api.controller.v1.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;

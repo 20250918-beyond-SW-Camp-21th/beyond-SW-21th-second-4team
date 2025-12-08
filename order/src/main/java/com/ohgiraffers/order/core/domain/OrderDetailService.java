@@ -1,6 +1,6 @@
-package com.ohgiraffers.timedeal.core.domain;
+package com.ohgiraffers.order.core.domain;
 
-import com.ohgiraffers.timedeal.storage.OrderDetailRepository;
+import com.ohgiraffers.order.storage.OrderDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

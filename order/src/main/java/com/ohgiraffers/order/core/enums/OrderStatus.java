@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.enums;
+package com.ohgiraffers.order.core.enums;
 
 public enum OrderStatus {
     DONE,

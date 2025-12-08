@@ -1,6 +1,6 @@
-package com.ohgiraffers.timedeal.storage;
+package com.ohgiraffers.order.storage;
 
-import com.ohgiraffers.timedeal.core.domain.Order;
+import com.ohgiraffers.order.core.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
