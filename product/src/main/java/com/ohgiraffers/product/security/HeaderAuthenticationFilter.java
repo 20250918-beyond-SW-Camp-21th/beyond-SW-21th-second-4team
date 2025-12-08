@@ -1,4 +1,4 @@
-package com.ohgiraffers.account.jwt;
+package com.ohgiraffers.product.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,17 +37,4 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) {
-//        String path = request.getServletPath();
-//
-//        return path.startsWith("/swagger-ui")
-//                || path.startsWith("/v3/api-docs")
-//                || path.startsWith("/swagger-resources")
-//                || path.startsWith("/api/v1/users/signUp")
-//                || path.startsWith("/api/v1/users/signIn")
-//                || path.startsWith("/api/v1/users/signOut")
-//                || path.startsWith("/api/v1/users/verify");
-//    }
-
 }
