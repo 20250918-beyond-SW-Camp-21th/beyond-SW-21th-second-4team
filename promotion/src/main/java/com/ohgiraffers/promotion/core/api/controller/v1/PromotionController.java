@@ -62,7 +62,7 @@ public class PromotionController {
         return ApiResult.success(promotionService.findPromotionById(id));
     }
 
-    @PostMapping("/api/v1/promotions")
+    @PostMapping("/api/v1/promotions/order")
     public ApiResult<?> checkTotalQuantity (@RequestBody OrderRequest orderRequest) {
         promotionService.updateSoldQuantity(orderRequest);
         return ApiResult.success();

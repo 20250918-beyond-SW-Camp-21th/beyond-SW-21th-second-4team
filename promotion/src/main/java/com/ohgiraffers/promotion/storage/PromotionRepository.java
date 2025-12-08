@@ -17,8 +17,7 @@ import java.util.Optional;
 public interface PromotionRepository extends JpaRepository<Promotion,Long> {
 
 
-
-    Optional<Promotion>findByProductId(Long productId);
+    Optional<Promotion> findByProductId(Long productId);
 
     Promotion findPromotionById(Long id);
 
@@ -27,7 +26,6 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
     List<PromotionResponse> findPromotionByPromotionStatus(PromotionStatus promotionStatus);
 
     PromotionStatus findPromotionStatusById(Long id);
-
 
 
     @Query("""
@@ -52,13 +50,12 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
     set promotionStatus = :status
     where id = :id
 """)
-    void updatePromotionStatus(Long id,PromotionStatus status);
+    void updatePromotionStatus(Long id, PromotionStatus status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Promotion p where p.id = :id")
     public Optional<Promotion> findByIdWithPessimisticLock(Long id);
 
-    void findSoldQuantityById(Long id, Long soldQuantity);
     @Modifying
     @Query("""
     update Promotion
@@ -66,7 +63,6 @@ public interface PromotionRepository extends JpaRepository<Promotion,Long> {
     where id = :id
 """)
     void updatePromotionSoldQuantity(Long id, Long soldQuantity);
-    Long findSoldQuantityById(Long id);
 
-    OrderResponse findOrderResponseById(long id);
+    Long findSoldQuantityById(Long id);
 }

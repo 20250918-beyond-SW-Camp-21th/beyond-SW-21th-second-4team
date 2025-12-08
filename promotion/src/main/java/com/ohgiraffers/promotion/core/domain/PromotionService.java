@@ -140,7 +140,8 @@ public class PromotionService {
     }
 
     public OrderResponse findOrderResponseById(long id) {
-        return promotionRepository.findOrderResponseById(id);
+        Promotion promotion = promotionRepository.findPromotionById(id);
+        return new OrderResponse(promotion.getId(), promotion.getSalePrice(), promotion.getTotalQuantity(), promotion.getPromotionStatus());
     }
 }
 
