@@ -2,6 +2,7 @@ package com.ohgiraffers.queue.core.api.controller.scheduler;
 
 import com.ohgiraffers.common.constants.QueueConstants;
 import com.ohgiraffers.common.constants.TimedealKeys;
+import com.ohgiraffers.queue.core.api.command.CommandClient;
 import com.ohgiraffers.queue.core.api.controller.v1.message.QueueStatusEvent;
 import com.ohgiraffers.queue.core.domain.WaitTimeEstimator;
 import com.ohgiraffers.queue.core.enums.QueueStatus;
@@ -25,6 +26,7 @@ public class QueueScheduler {
     private final QueueStatusPublisher publisher;
     private final WaitTimeEstimator waitTimeEstimator;
     private final QueueRepository queueRepository;
+    private final CommandClient commandClient;
 
     /**
      * 대기열 처리를 10초마다 처리한다
@@ -40,7 +42,7 @@ public class QueueScheduler {
         try {
             // 활성화된 프로모션 조회
             List<Long> timedeal = getActivePromotion();
-            if (timedeal.isEmpty()) {
+            if (timedeal == null || timedeal.isEmpty()) {
                 return;
             }
 
@@ -72,12 +74,7 @@ public class QueueScheduler {
      * @return 활성화된 프로모션 리스트
      */
     private List<Long> getActivePromotion() {
-
-        // 활성화되어 있는 프로모션 조회
-
-        List<Long> promotions = new ArrayList<>();
-        promotions.add(1L);
-        return promotions;
+        return commandClient.getActivePromotions();
     }
 
     /**
