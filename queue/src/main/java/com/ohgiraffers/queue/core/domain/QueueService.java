@@ -6,7 +6,7 @@ import com.ohgiraffers.common.support.error.ErrorType;
 import com.ohgiraffers.queue.core.api.controller.v1.response.QueueStatusResponse;
 import com.ohgiraffers.queue.core.enums.QueueStatus;
 import com.ohgiraffers.queue.core.messaging.SseEmitterRegistry;
-import com.ohgiraffers.queue.core.storage.QueueRepository;
+import com.ohgiraffers.queue.storage.QueueRepository;
 import io.lettuce.core.RedisCommandTimeoutException;
 import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;

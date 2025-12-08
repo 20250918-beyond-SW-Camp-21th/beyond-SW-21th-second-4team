@@ -1,4 +1,4 @@
-package com.ohgiraffers.queue.core.storage;
+package com.ohgiraffers.queue.storage;
 
 import com.ohgiraffers.common.constants.TimedealKeys;
 import lombok.RequiredArgsConstructor;

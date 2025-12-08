@@ -6,7 +6,7 @@ import com.ohgiraffers.queue.core.api.controller.v1.message.QueueStatusEvent;
 import com.ohgiraffers.queue.core.domain.WaitTimeEstimator;
 import com.ohgiraffers.queue.core.enums.QueueStatus;
 import com.ohgiraffers.queue.core.messaging.QueueStatusPublisher;
-import com.ohgiraffers.queue.core.storage.QueueRepository;
+import com.ohgiraffers.queue.storage.QueueRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

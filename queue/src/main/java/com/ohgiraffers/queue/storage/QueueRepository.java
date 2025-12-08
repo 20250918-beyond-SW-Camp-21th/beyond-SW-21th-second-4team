@@ -1,4 +1,4 @@
-package com.ohgiraffers.queue.core.storage;
+package com.ohgiraffers.queue.storage;
 
 import java.util.Optional;
 import java.util.Set;
