@@ -3,6 +3,7 @@ package com.ohgiraffers.queue.core.domain;
 import com.ohgiraffers.common.constants.QueueConstants;
 import com.ohgiraffers.common.support.error.CoreException;
 import com.ohgiraffers.common.support.error.ErrorType;
+import com.ohgiraffers.queue.core.api.command.CommandClient;
 import com.ohgiraffers.queue.core.api.controller.v1.response.QueueStatusResponse;
 import com.ohgiraffers.queue.core.enums.QueueStatus;
 import com.ohgiraffers.queue.core.messaging.SseEmitterRegistry;
@@ -22,6 +23,7 @@ public class QueueService {
     private final SseEmitterRegistry sseEmitterRegistry;
     private final WaitTimeEstimator waitTimeEstimator;
     private final QueueRepository queueRepository;
+    private final CommandClient commandClient;
 
     /**
      * 신규유저 또는 기존유저 대기열 진입
@@ -33,7 +35,14 @@ public class QueueService {
     public QueueStatusResponse enterQueue(Long timedealId, Long userId) {
         try {
             // 유저가 존재하는지 확인
-            //
+            if(commandClient.isValidUser(userId)) {
+                throw new CoreException(ErrorType.USER_NOT_FOUND);
+            }
+             
+            // 프로모션이 존재하는지 확인
+            if(commandClient.isValidPromotion(timedealId)) {
+                throw new CoreException(ErrorType.QUEUE_NOT_FOUND);
+            }
 
             // 유저를 대기열에 추가 (기존 유저를 초기화 할것인지?)
             //boolean added = queueRepository.addWaitQueueIfAbsent(timedealId, userId);
@@ -57,6 +66,8 @@ public class QueueService {
             throw new CoreException(ErrorType.REDIS_CONN_FAILURE);
         } catch (RedisException e) {
             throw new CoreException(ErrorType.REDIS_ERROR);
+        } catch (RuntimeException e) {
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
     }
 
