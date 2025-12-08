@@ -1,6 +1,6 @@
-package com.ohgiraffers.timedeal.storage;
+package com.ohgiraffers.account.storage;
 
-import com.ohgiraffers.timedeal.core.domain.User;
+import com.ohgiraffers.account.core.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

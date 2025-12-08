@@ -1,4 +1,4 @@
-package com.ohgiraffers.account.config;
+package com.ohgiraffers.account.core.api.config;
 
 import com.ohgiraffers.account.jwt.*;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +43,25 @@ public class SecurityConfig {
                 auth.requestMatchers(HttpMethod.POST, "/users", "/auth/login", "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/me").hasAuthority("USER")
                         .requestMatchers("/actuator/**").permitAll()
+
+                        // 회원가입/로그인/로그아웃/토큰인증 허용
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/signUp").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/signIn").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/signOut").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/users/verify").permitAll()
+
+
+
+                        // User API 전체 허용
+                        .requestMatchers("/api/v1/users/**").permitAll()
+
+                        // Swagger UI 허용
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
         )
         // 기존 JWT 검증 필터 대신, Gateway가 전달한 헤더를 이용하는 필터 추가

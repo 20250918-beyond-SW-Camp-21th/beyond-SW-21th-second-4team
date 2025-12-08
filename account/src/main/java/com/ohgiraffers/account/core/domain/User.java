@@ -1,9 +1,9 @@
-package com.ohgiraffers.timedeal.core.domain;
+package com.ohgiraffers.account.core.domain;
 
 
+import com.ohgiraffers.common.entity.BaseEntity;
 import com.ohgiraffers.common.support.error.CoreException;
 import com.ohgiraffers.common.support.error.ErrorType;
-import com.ohgiraffers.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

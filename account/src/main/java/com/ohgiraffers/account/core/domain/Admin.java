@@ -1,12 +1,11 @@
-package com.ohgiraffers.timedeal.core.domain;
+package com.ohgiraffers.account.core.domain;
 
 import com.ohgiraffers.common.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

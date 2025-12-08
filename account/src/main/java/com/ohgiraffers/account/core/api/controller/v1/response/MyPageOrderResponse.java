@@ -1,4 +1,4 @@
-package com.ohgiraffers.timedeal.core.api.controller.v1.response;
+package com.ohgiraffers.account.core.api.controller.v1.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

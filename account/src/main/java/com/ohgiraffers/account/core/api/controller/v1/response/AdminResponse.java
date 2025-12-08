@@ -1,6 +1,7 @@
-package com.ohgiraffers.timedeal.core.api.controller.v1.response;
+package com.ohgiraffers.account.core.api.controller.v1.response;
 
-import com.ohgiraffers.timedeal.core.domain.Admin;
+
+import com.ohgiraffers.account.core.domain.Admin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

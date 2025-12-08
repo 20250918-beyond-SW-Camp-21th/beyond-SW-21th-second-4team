@@ -1,14 +1,18 @@
-package com.ohgiraffers.timedeal.core.api.controller.v1;
+package com.ohgiraffers.account.core.api.controller.v1;
 
-import com.ohgiraffers.timedeal.core.api.controller.v1.request.LoginRequest;
-import com.ohgiraffers.timedeal.core.api.controller.v1.request.SignUpRequest;
-import com.ohgiraffers.timedeal.core.api.controller.v1.request.VerifyTokenRequest;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.SignInResponse;
-import com.ohgiraffers.timedeal.core.domain.UserService;
+import com.ohgiraffers.account.core.api.command.OrderClient;
+import com.ohgiraffers.account.core.api.controller.v1.request.LoginRequest;
+import com.ohgiraffers.account.core.api.controller.v1.request.SignUpRequest;
+import com.ohgiraffers.account.core.api.controller.v1.request.VerifyTokenRequest;
+import com.ohgiraffers.account.core.api.controller.v1.response.MyPageResponse;
+import com.ohgiraffers.account.core.api.controller.v1.response.MyPageOrderResponse;
+import com.ohgiraffers.account.core.api.controller.v1.response.OrderDetailResponse;
+import com.ohgiraffers.account.core.api.controller.v1.response.SignInResponse;
+import com.ohgiraffers.account.core.domain.UserService;
 import com.ohgiraffers.common.support.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final OrderClient orderServiceClient;
 
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인")
     @ApiResponses({
@@ -69,7 +74,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "토큰 불일치 또는 만료된 토큰"),
             @ApiResponse(responseCode = "404", description = "해당 유저를 찾을 수 없음")
     })
-    @GetMapping("/api/v1/users/verify")
+    @PostMapping("/api/v1/users/verify")
     public ApiResult<Boolean> verifyToken(@RequestBody VerifyTokenRequest verifyTokenRequest){
         return ApiResult.success(userService.verifyToken(verifyTokenRequest.userId(), verifyTokenRequest.token()));
     }
@@ -87,16 +92,30 @@ public class UserController {
         return ApiResult.success(userService.getMe(userId));
     }
 
-    @Operation(summary = "주문내역 조회", description = "유저의 마이페이지 주문내역 조회")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-            @ApiResponse(responseCode = "404", description = "유저 또는 주문내역을 찾을 수 없음")
-    })
+//    @Operation(summary = "주문내역 조회", description = "유저의 마이페이지 주문내역 조회")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "조회 성공"),
+//            @ApiResponse(responseCode = "404", description = "유저 또는 주문내역을 찾을 수 없음")
+//    })
+//    @GetMapping("/api/v1/users/me/orders")
+//    public ApiResult<OrderDetailResponse> getMeOrders(
+//            @Parameter(description = "유저 ID", example = "7") @RequestParam Long userId
+//    ) {
+//        return ApiResult.success(userService.getMeOrders(userId));
+//    }
+
     @GetMapping("/api/v1/users/me/orders")
     public ApiResult<OrderDetailResponse> getMeOrders(
-            @Parameter(description = "유저 ID", example = "7") @RequestParam Long userId
+            @Parameter(name = "X-User-Id", in = ParameterIn.HEADER, required = true)
+            @RequestHeader("X-User-Id") String headerUserId,
+
+            @Parameter(name = "X-User-Role", in = ParameterIn.HEADER, required = true)
+            @RequestHeader("X-User-Role") String headerRole,
+
+            @Parameter(description = "유저 ID", example = "7")
+            @RequestParam Long userId
     ) {
-        return ApiResult.success(userService.getMeOrders(userId));
+        return orderServiceClient.getMeOrders(userId);
     }
 }
 
