@@ -1,1 +1,10 @@
 rootProject.name = 'Timedeal'
+
+include 'server'
+include 'gateway'
+include 'account'
+include 'queue'
+include 'common'
+include 'promotion'
+include 'product'
+include 'order'

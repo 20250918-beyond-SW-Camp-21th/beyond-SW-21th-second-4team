@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: timedeal-queue-service
+
+  profiles:
+    active: local

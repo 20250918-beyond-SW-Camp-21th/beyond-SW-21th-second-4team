@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: timedeal-account-service
+
+  profiles:
+    active: local

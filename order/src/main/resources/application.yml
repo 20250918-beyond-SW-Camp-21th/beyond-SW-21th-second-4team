@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: timedeal-order-service
+
+  profiles:
+    active: local

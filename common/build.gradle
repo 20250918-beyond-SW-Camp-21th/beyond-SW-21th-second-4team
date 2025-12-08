@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.ohgiraffers'
 version = '0.0.1-SNAPSHOT'
-description = 'Timedeal'
+description = 'timedeal-common'
 
 java {
     toolchain {
@@ -14,39 +14,35 @@ java {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+// 공통 모듈은 실행 가능한 JAR가 아닌 라이브러리로 사용
 bootJar {
     enabled = false
 }
 
 jar {
-    enabled = false
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
-repositories {
-    mavenCentral()
+    enabled = true
 }
 
 dependencies {
-    // Common Module
-    implementation project(':common')
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
-    implementation 'org.redisson:redisson:3.27.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Utility
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

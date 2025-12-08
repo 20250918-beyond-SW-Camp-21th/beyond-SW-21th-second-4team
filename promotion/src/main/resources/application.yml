@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: timedeal-promotion-service
+
+  profiles:
+    active: local

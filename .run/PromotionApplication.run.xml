@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PromotionApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="Timedeal.promotion.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.ohgiraffers.promotion.PromotionApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
