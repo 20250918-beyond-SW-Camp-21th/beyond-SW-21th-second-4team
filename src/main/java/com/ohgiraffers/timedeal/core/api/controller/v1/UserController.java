@@ -4,7 +4,6 @@ import com.ohgiraffers.timedeal.core.api.controller.v1.request.LoginRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.SignUpRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.request.VerifyTokenRequest;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.MyPageResponse;
-import com.ohgiraffers.timedeal.core.api.controller.v1.response.OrderDetailResponse;
 import com.ohgiraffers.timedeal.core.api.controller.v1.response.SignInResponse;
 import com.ohgiraffers.timedeal.core.domain.UserService;
 import com.ohgiraffers.common.support.response.ApiResult;
