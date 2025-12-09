@@ -1,8 +1,8 @@
 package com.ohgiraffers.order.core.api.controller.v1;
 
+import com.ohgiraffers.common.support.response.ApiResult;
 import com.ohgiraffers.order.core.api.controller.v1.request.OrderRequest;
 import com.ohgiraffers.order.core.domain.OrderService;
-import com.ohgiraffers.order.core.support.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

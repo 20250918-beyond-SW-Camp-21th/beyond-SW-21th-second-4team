@@ -1,7 +1,7 @@
 package com.ohgiraffers.order.core.api.controller.v1.request;
 
-import com.ohgiraffers.order.core.support.error.CoreException;
-import com.ohgiraffers.order.core.support.error.ErrorType;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -32,6 +32,9 @@ public class OrderRequest {
             throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
         if (quantity <= 0) {
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
+        }
+        if(quantity > 5) {
             throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
     }

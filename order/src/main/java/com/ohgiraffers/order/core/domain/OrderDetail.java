@@ -1,8 +1,11 @@
 package com.ohgiraffers.order.core.domain;
 
-import com.ohgiraffers.timedeal.storage.BaseEntity;
+import com.ohgiraffers.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +39,6 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-
     public static OrderDetail of(Long orderId, Long promotionId
             , Integer quantity, Integer unitPrice
             ,String promotionName
@@ -49,8 +51,7 @@ public class OrderDetail extends BaseEntity {
         detail.subtotal = unitPrice* quantity;
         detail.promotionName = promotionName;
         detail.imageUrl = imageUrl;
+
         return detail;
     }
-
-
 }
