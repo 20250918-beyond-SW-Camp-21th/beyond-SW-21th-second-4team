@@ -12,6 +12,7 @@ export const orderService = {
   /**
    * Create a new order
    * 백엔드 응답: { OrderId: number, quantity: number }
+   * Note: userId는 request body에 포함 (백엔드 OrderRequest 요구사항)
    */
   async createOrder(
     userId: number,
@@ -29,13 +30,11 @@ export const orderService = {
   /**
    * Get user's order history
    * 백엔드 응답: OrderDetailResponse { myPageOrderResponseList: [...] }
+   * userId는 JWT 토큰에서 자동 추출됨
    */
-  async getUserOrders(userId: number): Promise<OrderDetailResponse> {
+  async getUserOrders(): Promise<OrderDetailResponse> {
     const response = await api.get<ApiResult<OrderDetailResponse>>(
-      `${API_ENDPOINTS.USER_ORDERS}`,
-      {
-        params: { userId },
-      }
+      API_ENDPOINTS.USER_ORDERS
     );
     return handleApiResponse(response.data);
   },

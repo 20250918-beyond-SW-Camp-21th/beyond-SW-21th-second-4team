@@ -25,7 +25,8 @@ export const Orders: React.FC = () => {
     try {
       setLoading(true);
       // 백엔드 응답: { myPageOrderResponseList: [...] }
-      const data = await orderService.getUserOrders(user.id);
+      // userId는 토큰에서 자동 추출됨
+      const data = await orderService.getUserOrders();
       // 최신순으로 정렬
       const orderList = data.myPageOrderResponseList || [];
       setOrders(orderList.sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()));

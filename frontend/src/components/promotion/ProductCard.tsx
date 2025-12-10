@@ -11,31 +11,42 @@ export interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
   const navigate = useNavigate();
 
+  // 현재 시간 기준으로 상태 계산
+  const now = new Date();
+  const startTime = new Date(promotion.startTime);
+  const endTime = new Date(promotion.endTime);
+
+  // promotionStatus가 없으면 시간으로 계산
+  const status = promotion.promotionStatus || (
+    now < startTime ? 'SCHEDULER' :
+    now > endTime ? 'ENDED' : 'ACTIVE'
+  );
+
   // ENDED 상태 프로모션은 렌더링하지 않음
-  if (promotion.promotionStatus === 'ENDED') {
+  if (status === 'ENDED') {
     return null;
   }
 
-  // 백엔드에서 soldQuantity 제공
-  const soldQuantity = promotion.soldQuantity;
+  // 백엔드에서 soldQuantity 제공 (없으면 0)
+  const soldQuantity = promotion.soldQuantity || 0;
   const remainingQuantity = promotion.totalQuantity - soldQuantity;
-  const isSoldOut = remainingQuantity === 0;
+  const isSoldOut = remainingQuantity <= 0;
   const stockPercentage = (remainingQuantity / promotion.totalQuantity) * 100;
   const isLowStock = stockPercentage > 0 && stockPercentage <= 20;
 
-  // 임시 상품 정보 (실제로는 Product API를 별도로 조회해야 함)
-  const productName = promotion.productName || `상품 #${promotion.productId}`;
-  const productImage = promotion.productImage;
+  // 상품 정보 (백엔드 필드명 호환)
+  const productName = promotion.productName || `상품 #${promotion.id}`;
+  const productImage = promotion.productImageUrl || promotion.productImage;
   const originalPrice = promotion.originalPrice || 0;
   const salePrice = promotion.salePrice || Math.round(originalPrice * (1 - promotion.discountRate / 100));
 
   // 상태별 타이머 시간 결정
-  const timerEndTime = promotion.promotionStatus === 'SCHEDULER'
+  const timerEndTime = status === 'SCHEDULER'
     ? promotion.startTime  // SCHEDULER: 시작까지 남은 시간
     : promotion.endTime;    // ACTIVE: 끝까지 남은 시간
 
   const handleClick = () => {
-    if (!isSoldOut && promotion.promotionStatus !== 'SCHEDULER') {
+    if (!isSoldOut && status !== 'SCHEDULER') {
       navigate(`/promotions/${promotion.id}`);
     }
   };
@@ -62,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
         )}
 
         {/* Timer Overlay (shown on hover) */}
-        {!isSoldOut && promotion.promotionStatus !== 'SCHEDULER' && (
+        {!isSoldOut && status !== 'SCHEDULER' && (
           <CountdownTimer
             endTime={timerEndTime}
             variant="overlay"
@@ -79,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
         )}
 
         {/* Scheduler Overlay */}
-        {promotion.promotionStatus === 'SCHEDULER' && (
+        {status === 'SCHEDULER' && (
           <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
             <div className="text-center text-white">
               <div className="text-sm mb-2">곧 시작합니다</div>
@@ -93,19 +104,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ promotion }) => {
 
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-          {!isSoldOut && isLowStock && promotion.promotionStatus === 'ACTIVE' && (
+          {!isSoldOut && isLowStock && status === 'ACTIVE' && (
             <Badge variant="limited">한정수량</Badge>
           )}
-          {promotion.promotionStatus === 'ACTIVE' && !isSoldOut && (
+          {status === 'ACTIVE' && !isSoldOut && (
             <Badge variant="new">진행중</Badge>
           )}
-          {promotion.promotionStatus === 'SCHEDULER' && (
+          {status === 'SCHEDULER' && (
             <Badge variant="new">대기중</Badge>
           )}
         </div>
 
         {/* Timer Badge (bottom right) - ACTIVE 상태만 표시 */}
-        {!isSoldOut && promotion.promotionStatus === 'ACTIVE' && (
+        {!isSoldOut && status === 'ACTIVE' && (
           <div className="absolute bottom-2 right-2">
             <CountdownTimer
               endTime={timerEndTime}

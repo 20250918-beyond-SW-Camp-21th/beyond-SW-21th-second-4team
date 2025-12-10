@@ -8,8 +8,9 @@ export const useAuth = () => {
 
   useEffect(() => {
     // Check if user is logged in on mount
+    const token = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
-    if (userId) {
+    if (token && userId) {
       loadUser(parseInt(userId));
     } else {
       setLoading(false);
@@ -18,7 +19,7 @@ export const useAuth = () => {
 
   const loadUser = async (userId: number) => {
     try {
-      const myPageData = await userService.getUserProfile(userId);
+      const myPageData = await userService.getUserProfile();
       // MyPageResponse를 User 타입으로 변환
       const userData: User = {
         id: userId,
@@ -50,8 +51,8 @@ export const useAuth = () => {
       localStorage.setItem('userId', response.userId.toString());
       localStorage.setItem('userEmail', email);
 
-      // 실제 사용자 정보 조회
-      const myPageData = await userService.getUserProfile(response.userId);
+      // 실제 사용자 정보 조회 (토큰이 저장된 후 호출)
+      const myPageData = await userService.getUserProfile();
 
       // MyPageResponse를 User 타입으로 변환
       const userData: User = {
@@ -94,6 +95,7 @@ export const useAuth = () => {
     setUser(null);
     localStorage.removeItem('userId');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
   };
 
   return {

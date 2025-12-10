@@ -43,7 +43,8 @@ export const PromotionDetail: React.FC = () => {
 
     try {
       setIsJoiningQueue(true);
-      await queueService.enterQueue(user.id, promotion.id);
+      // userId는 JWT 토큰에서 자동 추출됨
+      await queueService.enterQueue(promotion.id);
       navigate(`/queue/${promotion.id}`);
     } catch (err: any) {
       console.error('대기열 입장 실패:', err);
@@ -88,19 +89,22 @@ export const PromotionDetail: React.FC = () => {
 
   const soldQuantity = promotion.soldQuantity || 0;
   const remainingQuantity = promotion.totalQuantity - soldQuantity;
-  const isSoldOut = remainingQuantity === 0;
+  const isSoldOut = remainingQuantity <= 0;
   const stockPercentage = (remainingQuantity / promotion.totalQuantity) * 100;
   const isLowStock = stockPercentage > 0 && stockPercentage <= 20;
 
-  const productName = promotion.productName || `상품 #${promotion.productId}`;
-  const productImage = promotion.productImage;
+  const productName = promotion.productName || `상품 #${promotion.id}`;
+  const productImage = promotion.productImageUrl || promotion.productImage;
   const originalPrice = promotion.originalPrice || 0;
   const salePrice = promotion.salePrice || Math.round(originalPrice * (1 - promotion.discountRate / 100));
 
-  const isPromotionActive = promotion.promotionStatus === 'ACTIVE';
+  // 현재 시간 기준으로 상태 계산
   const now = new Date();
   const startTime = new Date(promotion.startTime);
   const endTime = new Date(promotion.endTime);
+
+  const isPromotionActive = promotion.promotionStatus === 'ACTIVE' ||
+    (!promotion.promotionStatus && now >= startTime && now <= endTime);
   const isBeforeStart = now < startTime;
   const isAfterEnd = now > endTime;
 

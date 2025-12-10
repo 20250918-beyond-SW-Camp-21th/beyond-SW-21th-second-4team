@@ -36,7 +36,8 @@ export const PromotionList: React.FC = () => {
   const loadUserInfo = async () => {
     if (!user) return;
     try {
-      const data = await userService.getUserProfile(user.id);
+      // userId는 JWT 토큰에서 자동 추출됨
+      const data = await userService.getUserProfile();
       // 백엔드에서 MyPageResponse 직접 반환
       setUserInfo(data);
     } catch (err: any) {

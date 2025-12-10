@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * CORS(Cross-Origin Resource Sharing) 설정
- * 프론트엔드(localhost:5173)에서 백엔드(localhost:8080) API 접근 허용
+ * 프론트엔드(localhost:5173)에서 백엔드(localhost:8000) API 접근 허용
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

@@ -8,25 +8,24 @@ export const Queue: React.FC = () => {
   const { promotionId } = useParams<{ promotionId: string }>();
   const navigate = useNavigate();
 
-  // Get userId from localStorage (in production, use proper auth context)
-  const userId = parseInt(localStorage.getItem('userId') || '0');
+  // 토큰 존재 여부로 로그인 상태 확인
+  const isLoggedIn = !!localStorage.getItem('authToken');
 
   const { queueData, loading, error, startPolling } = useQueue(
-    promotionId ? parseInt(promotionId) : null,
-    userId || null
+    promotionId ? parseInt(promotionId) : null
   );
 
   useEffect(() => {
-    if (!userId) {
+    if (!isLoggedIn) {
       alert('로그인이 필요합니다.');
       navigate('/login');
       return;
     }
 
-    if (promotionId && userId) {
+    if (promotionId) {
       startPolling();
     }
-  }, [promotionId, userId]);
+  }, [promotionId, isLoggedIn]);
 
   const handlePurchase = () => {
     navigate(`/checkout/${promotionId}`);
@@ -36,7 +35,7 @@ export const Queue: React.FC = () => {
     window.location.reload();
   };
 
-  if (!userId) {
+  if (!isLoggedIn) {
     return null;
   }
 
