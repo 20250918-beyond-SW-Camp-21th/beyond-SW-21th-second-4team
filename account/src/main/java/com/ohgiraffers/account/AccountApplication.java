@@ -8,11 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
-@EnableJpaRepositories(basePackages = {
-        "com.ohgiraffers.account.storage",
-        "com.ohgiraffers.timedeal.storage"
-})
 public class AccountApplication {
 
     public static void main(String[] args) {
