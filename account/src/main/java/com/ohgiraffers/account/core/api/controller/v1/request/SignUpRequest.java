@@ -10,7 +10,11 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "회원가입 생성 요청")
 public record SignUpRequest(
         @NotBlank
-        @Schema(description = "email 입력",example = "user3",requiredMode = REQUIRED)
+        @Pattern(
+                regexp = ".*@.*",
+                message = "이메일에는 @ 문자가 반드시 포함되어야 합니다."
+        )
+        @Schema(description = "email 입력",example = "user3@example.com",requiredMode = REQUIRED)
         String email,
 
         @Pattern(
