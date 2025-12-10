@@ -19,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     // 1. 상품 등록
-    @PostMapping("/product")
+    @PostMapping
     @Operation(summary = "상품 등록", description = "관리자가 새로운 상품을 등록합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상품 등록 성공"),
@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     // 2. 상품 수정
-    @PutMapping("/product/{productid}")
+    @PutMapping("/{productid}")
     @Operation(summary = "상품 수정", description = "관리자가 기존 상품을 수정합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상품 수정 성공"),
@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     // 3. 상품 삭제
-    @DeleteMapping("/product/{productid}")
+    @DeleteMapping("/{productid}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상품 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음"),
@@ -58,7 +58,7 @@ public class ProductController {
     }
 
     // 4. 단건 조회
-    @GetMapping("/product/{productid}")
+    @GetMapping("/{productid}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
             @ApiResponse(responseCode = "404", description = "상품 또는 카테고리를 찾을 수 없음")
