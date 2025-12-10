@@ -22,7 +22,7 @@ public class ProductService {
     @Transactional
     public void createProduct(Long adminId, ProductRequest request) {
         if (!categoryRepository.existsById(request.categoryId())) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PRODUCT_CATEGORY_NOT_FOUND);
         }
 
         Product product = new Product(
@@ -41,14 +41,14 @@ public class ProductService {
     @Transactional
     public void update(Long adminId, Long productId, ProductRequest request) {
         if (!categoryRepository.existsById(request.categoryId())) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PRODUCT_CATEGORY_NOT_FOUND);
         }
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
+                .orElseThrow(() -> new CoreException(ErrorType.PRODUCT_NOT_FOUND));
 
         if(!adminId.equals(product.getAdminId())) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PRODUCT_UNAUTHORIZED);
         }
 
         product.update(
@@ -66,10 +66,10 @@ public class ProductService {
     @Transactional
     public void delete(Long adminId, Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
+                .orElseThrow(() -> new CoreException(ErrorType.PRODUCT_NOT_FOUND));
 
         if(!product.getAdminId().equals(adminId)) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PRODUCT_UNAUTHORIZED);
         }
 
         productRepository.delete(product);
@@ -80,10 +80,10 @@ public class ProductService {
     public ProductResponse findById(Long productId) {
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
+                .orElseThrow(() -> new CoreException(ErrorType.PRODUCT_NOT_FOUND));
 
         Category category = categoryRepository.findById(product.getCategoryId())
-                .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
+                .orElseThrow(() -> new CoreException(ErrorType.PRODUCT_CATEGORY_NOT_FOUND));
 
         String company = commandClient.getAdminCompany(product.getAdminId());
 
