@@ -1,21 +1,24 @@
 package com.ohgiraffers.promotion.core.domain;
 
 import com.ohgiraffers.common.constants.TimedealKeys;
+import com.ohgiraffers.common.support.error.CoreException;
+import com.ohgiraffers.common.support.error.ErrorType;
 import com.ohgiraffers.common.support.response.ResultType;
+import com.ohgiraffers.promotion.core.api.command.CommandClient;
+import com.ohgiraffers.promotion.core.api.command.ProductClient;
 import com.ohgiraffers.promotion.core.api.controller.v1.request.OrderRequest;
 import com.ohgiraffers.promotion.core.api.controller.v1.request.PromotionRequest;
-import com.ohgiraffers.promotion.core.api.controller.v1.response.OrderResponse;
-import com.ohgiraffers.promotion.core.api.controller.v1.response.PromotionListResponse;
-import com.ohgiraffers.promotion.core.api.controller.v1.response.PromotionResponse;
-import com.ohgiraffers.promotion.core.api.controller.v1.response.RedisPromotionResponse;
+import com.ohgiraffers.promotion.core.api.controller.v1.response.*;
 import com.ohgiraffers.promotion.core.enums.PromotionStatus;
 import com.ohgiraffers.promotion.storage.PromotionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PromotionService {
     private final PromotionRepository promotionRepository;
     private final StringRedisTemplate stringRedisTemplate;
+    private final CommandClient commandClient;
 
     @Transactional
     public void updateSoldQuantity(OrderRequest orderRequest) {
@@ -38,15 +42,23 @@ public class PromotionService {
     ;
 
     //프로모션 생성(이미 진행하고있는 프로모션이 있나 비교)
-    public void promotionSave(PromotionRequest pr) {
+
+    @Transactional
+    public void promotionSave(Long userId, PromotionRequest pr) {
         AtomicReference<ResultType> createdSuccess = new AtomicReference<>(ResultType.ERROR);
+
+
+        ProductResponse product = commandClient.getProduct(pr.getProductId());
+        if (product == null) {
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
+        }
 
         Promotion promotion =
                 promotionRepository.findByProductId(pr.getProductId())
                         .filter(p -> p.getPromotionStatus() != PromotionStatus.ENDED)
                         .orElseGet(() -> {
                             Promotion promotion1 = new Promotion(
-                                    pr.getAdminId(),
+                                    userId,
                                     pr.getProductId(),
                                     pr.getDiscountRate(),
                                     pr.getStartTime(),
@@ -58,12 +70,15 @@ public class PromotionService {
                             }
                             createdSuccess.set(ResultType.SUCCESS);
                             return promotionRepository.save(promotion1);
-
                         });
+        promotion.setSalePrice((int) (pr.getDiscountRate() * product.price()));
+
+
     }
 
     @Transactional
-    public void promotionUpdateById(Long id, PromotionRequest req) {
+    public void promotionUpdateById(
+            Long userId, Long id, PromotionRequest req) {
 
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Promotion not found: " + id));
@@ -73,7 +88,7 @@ public class PromotionService {
         }
 
         promotion.updatePromotion(
-                req.getAdminId(),
+                userId,
                 req.getProductId(),
                 req.getDiscountRate(),
                 req.getStartTime(),
@@ -102,18 +117,25 @@ public class PromotionService {
 
 
     public List<PromotionResponse> findAll() {
-        return promotionRepository.findAllPromotions().stream().map(p -> new PromotionResponse(
-                        p.id(),
-                        p.adminId(),
-                        p.productId(),
-                        p.salePrice(),
-                        p.discountRate(),
-                        p.totalQuantity(),
-                        p.startTime(),
-                        p.endTime()
-                ))
-                .toList();
-
+        List<PromotionResponse> result = new ArrayList<>();
+        List<Promotion> promotions = promotionRepository.findAll();
+        for (Promotion promotion : promotions) {
+            ProductResponse product = commandClient.getProduct(promotion.getProductId());
+            String company = commandClient.getCompany(promotion.getAdminId());
+            result.add(new PromotionResponse(
+                    promotion.getId(),
+                    company,
+                    product.name(),
+                    product.price(),
+                    promotion.getSalePrice(),
+                    promotion.getDiscountRate(),
+                    promotion.getTotalQuantity(),
+                    promotion.getStartTime(),
+                    promotion.getEndTime(),
+                    product.imageUrl()
+            ));
+        }
+        return result;
     }
 
     ;
@@ -125,31 +147,35 @@ public class PromotionService {
         if (status == null) {
             return null;
         }
-
-
-        List<PromotionResponse> responses = promotionRepository.findByPromotionStatus(status).stream()
-                .map(p -> new PromotionResponse(
-                        p.getId(),
-                        p.getAdminId(),
-                        p.getProductId(),
-                        p.getSalePrice(),
-                        p.getDiscountRate(),
-                        p.getTotalQuantity(),
-                        p.getStartTime(),
-                        p.getEndTime()
-                ))
-                .toList();
-
-        return new PromotionListResponse(responses);
+        List<Promotion> promotions = promotionRepository.findAllByPromotionStatus(status);
+        List<PromotionResponse> result = new ArrayList<>();
+        for (Promotion promotion : promotions) {
+            String company = commandClient.getCompany(promotion.getAdminId());
+            ProductResponse product = commandClient.getProduct(promotion.getProductId());
+            result.add(new PromotionResponse(
+                    promotion.getId(),
+                    company,
+                    product.name(),
+                    product.price(),
+                    promotion.getSalePrice(),
+                    promotion.getDiscountRate(),
+                    promotion.getTotalQuantity(),
+                    promotion.getStartTime(),
+                    promotion.getEndTime(),
+                    product.imageUrl()
+            ));
+        }
+        PromotionListResponse promotionListResponse = new PromotionListResponse(result);
+        return promotionListResponse;
 
     }
 
     public List<RedisPromotionResponse> returnSchedule(PromotionStatus promotionStatus) {
         List<Promotion> promotion = promotionRepository.findAllByPromotionStatus(promotionStatus);
         return promotion.stream().map(p -> new RedisPromotionResponse(
-                p.getId(),
-                p.getTotalQuantity()
-        ))
+                        p.getId(),
+                        p.getTotalQuantity()
+                ))
                 .toList();
     }
 
@@ -162,17 +188,22 @@ public class PromotionService {
         promotionRepository.updatePromotionStatus(id, promotionStatus);
     }
 
-    public PromotionResponse findPromotionById(long id) {
+    public PromotionResponse findPromotionById(Long id) {
         Promotion promotion = promotionRepository.findPromotionById(id);
+        ProductResponse product = commandClient.getProduct(promotion.getProductId());
+        String company = commandClient.getCompany(promotion.getAdminId());
+
         return new PromotionResponse(
                 promotion.getId(),
-                promotion.getAdminId(),
-                promotion.getProductId(),
+                company,
+                product.name(),
+                product.price(),
                 promotion.getSalePrice(),
                 promotion.getDiscountRate(),
                 promotion.getTotalQuantity(),
                 promotion.getStartTime(),
-                promotion.getEndTime()
+                promotion.getEndTime(),
+                product.imageUrl()
         );
     }
 

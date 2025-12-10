@@ -21,6 +21,14 @@ public enum ErrorType {
     QUEUE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.QUEUE_NOT_FOUND, "대기열이 존재하지 않습니다.", LogLevel.WARN),
     QUEUE_EXPIRED(HttpStatus.GONE, ErrorCode.QUEUE_EXPIRED, "진행큐에 기간이 만료되었습니다.", LogLevel.WARN),
 
+    // PRODUCT ERROR
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.PRODUCT_NOT_FOUND, "상품이 존재하지 않습니다.", LogLevel.WARN),
+    PRODUCT_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.PRODUCT_CATEGORY_NOT_FOUND, "상품 카테고리가 존재하지 않습니다.", LogLevel.WARN),
+    PRODUCT_UNAUTHORIZED(HttpStatus.FORBIDDEN, ErrorCode.PRODUCT_UNAUTHORIZED, "상품에 대한 권한이 없습니다.", LogLevel.WARN),
+    PRODUCT_VALIDATION_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.PRODUCT_VALIDATION_ERROR, "상품 요청 값이 올바르지 않습니다.", LogLevel.WARN),
+
+
+
     MAX_ERROR(null, null, null, null);
 
     private final HttpStatus status;

@@ -15,6 +15,8 @@ public class CommandClient {
         ApiResult<AdminResponse> response = accountClient.findAdminById(adminId);
         if(response.getResult() == ResultType.ERROR) {
             return null;
+
+
         }
         return response.getData().company();
     }
