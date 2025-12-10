@@ -70,9 +70,7 @@ public class PromotionController {
 
     @Operation(summary = "프로모션 검색", description = "입력하신 ID로 프로모션을 검색합니다..")
     @GetMapping("/{id}")
-    public ApiResult<PromotionResponse> findPromotionById(
-            @PathVariable long id
-    ) {
+    public ApiResult<PromotionResponse> findPromotionById(@PathVariable Long id) {
         return ApiResult.success(promotionService.findPromotionById(id));
     }
 
