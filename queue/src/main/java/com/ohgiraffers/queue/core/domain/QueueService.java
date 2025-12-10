@@ -34,13 +34,9 @@ public class QueueService {
      */
     public QueueStatusResponse enterQueue(Long timedealId, Long userId) {
         try {
-            // 유저가 존재하는지 확인
-            if(commandClient.isValidUser(userId)) {
-                throw new CoreException(ErrorType.USER_NOT_FOUND);
-            }
-             
+
             // 프로모션이 존재하는지 확인
-            if(commandClient.isValidPromotion(timedealId)) {
+            if(!commandClient.isValidPromotion(timedealId)) {
                 throw new CoreException(ErrorType.QUEUE_NOT_FOUND);
             }
 
