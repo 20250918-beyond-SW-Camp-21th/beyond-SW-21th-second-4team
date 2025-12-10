@@ -84,4 +84,11 @@ public class Promotion extends BaseEntity {
         this.totalQuantity = totalQuantity;
     }
 
+    public void decreaseSoldQuantity(Integer quantity) {
+        if(this.soldQuantity + quantity > this.totalQuantity) {
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
+        }
+        this.soldQuantity += quantity;
+    }
+
 }

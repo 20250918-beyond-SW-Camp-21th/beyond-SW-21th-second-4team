@@ -17,7 +17,5 @@ public interface PromotionClient {
     ApiResult<PromotionResponse> getPromotion(@PathVariable Long id);
 
     @PostMapping("/order")
-    ApiResult<PromotionResponse> checkTotalQuantity(
-            @RequestBody OrderRequest orderRequest
-    );
+    ApiResult<Integer> checkTotalQuantity(@RequestBody OrderRequest orderRequest);
 }

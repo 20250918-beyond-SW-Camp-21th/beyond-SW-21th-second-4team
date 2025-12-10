@@ -30,13 +30,15 @@ public class PromotionService {
     private final CommandClient commandClient;
 
     @Transactional
-    public void updateSoldQuantity(OrderRequest orderRequest) {
-        Promotion promotion = promotionRepository.findPromotionById(orderRequest.getId());
-        int soldQuantity = orderRequest.getSoldQuantity() + promotionRepository.findSoldQuantityById(orderRequest.getId());
+    public Integer updateSoldQuantity(OrderRequest orderRequest) {
+        Promotion promotion = promotionRepository.findPromotionById(orderRequest.getPromotionId());
 
-        promotionRepository.updatePromotionSoldQuantity(orderRequest.getId(), soldQuantity);
+        promotion.decreaseSoldQuantity(orderRequest.getQuantity());
+
         String key = TimedealKeys.setPromotion(promotion.getId());
-        stringRedisTemplate.opsForValue().decrement(key, orderRequest.getSoldQuantity());
+        stringRedisTemplate.opsForValue().decrement(key, orderRequest.getQuantity());
+
+        return orderRequest.getQuantity();
     }
 
     ;

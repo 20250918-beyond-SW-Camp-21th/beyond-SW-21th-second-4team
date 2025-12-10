@@ -25,9 +25,9 @@ public class PromotionReader {
         );
     }
 
-    public void decrease(OrderRequest orderRequest) {
+    public Integer decrease(OrderRequest orderRequest) {
 
-        apiResult.unwrap(
+        return apiResult.unwrap(
                 client.checkTotalQuantity(orderRequest),
                 () -> new CoreException(ErrorType.DEFAULT_ERROR)
         );
