@@ -18,7 +18,8 @@ public record PromotionResponse (
         LocalDateTime startTime,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime endTime,
-        String productImageUrl
+        String productImageUrl,
+        PromotionStatus promotionStatus
         ){
 
 }

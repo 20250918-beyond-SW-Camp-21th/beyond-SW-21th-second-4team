@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "timedeal-queue-service", configuration = FeignClientConfig.class)
 public interface QueueClient {
 
-    @GetMapping("/queues/verify")
+    @GetMapping("/verify")
     ApiResult<Object> verifyQueue(
             @RequestParam Long timedealId,
             @RequestParam Long userId);

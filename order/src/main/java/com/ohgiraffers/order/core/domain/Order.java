@@ -44,15 +44,15 @@ public class Order extends BaseEntity {
     @OneToMany
     private List<OrderDetail> details = new ArrayList<>();
 
-    public void addDetail(PromotionResponse promotion, ProductResponse product, Integer quantity) {
+    public void addDetail(PromotionResponse promotion, Integer quantity) {
 
         OrderDetail detail = OrderDetail.of(
                 this.getId(),
                 promotion.id(),
                 quantity,
                 promotion.salePrice(),
-                product.imageUrl(),
-                product.name()
+                promotion.productImageUrl(),
+                promotion.productName()
         );
 
         this.details.add(detail);
