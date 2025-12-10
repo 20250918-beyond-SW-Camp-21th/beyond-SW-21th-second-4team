@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class UserService {
                 .orElseThrow(() -> new CoreException(ErrorType.DEFAULT_ERROR));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.USER_NOT_FOUND);
         }
 
         String accessToken = jwtTokenProvider.createToken(
@@ -91,7 +92,7 @@ public class UserService {
                 user.getTotal_saved()
         );
     }
-
+    @Transactional
     public OrderDetailResponse getMeOrders(Long userId) {
         List<MyPageOrderResponse> meOrders = commandClient.getMeOrders(userId);
         return new OrderDetailResponse(meOrders);
