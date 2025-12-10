@@ -25,9 +25,9 @@ public class UserReader {
 
     public void decreaseMoney(Long id, Integer price) {
 
-        return apiResult.unwrap(
-                client.decreaseMoney(id, price),
-                () -> new CoreException(ErrorType.DEFAULT_ERROR)
+        apiResult.unwrap(
+            client.decreaseMoney(id, price),
+            () -> new CoreException(ErrorType.DEFAULT_ERROR)
         );
     }
 }

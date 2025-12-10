@@ -63,6 +63,4 @@ public class PromotionScheduler {
             stringRedisTemplate.delete(key);
         }
     }
-
-
 }
