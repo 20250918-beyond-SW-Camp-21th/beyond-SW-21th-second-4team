@@ -42,31 +42,8 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(restAuthenticationEntryPoint)
                                 .accessDeniedHandler(restAccessDeniedHandler)
                 )
-                .authorizeHttpRequests(auth ->
-
-                        // ✅ 회원가입 / 로그인 / 토큰검증만 인증 없이 허용
-                        auth.requestMatchers(HttpMethod.POST,
-                                        "/api/v1/users/signUp",
-                                        "/api/v1/users/signIn",
-                                        "/api/v1/users/verify"
-                                ).permitAll()
-
-                                // ✅ 마이페이지, 주문조회는 USER 권한 필요
-                                .requestMatchers(HttpMethod.GET,
-                                        "/api/v1/users/me",
-                                        "/api/v1/users/me/orders"
-                                ).hasRole("USER")
-
-                                // ✅ Swagger 허용
-                                .requestMatchers(
-                                        "/swagger-ui.html",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/swagger-resources/**"
-                                ).permitAll()
-
-                                // ✅ 그 외는 전부 인증 필요
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()
                 )
 
                 // ✅ Gateway 헤더 인증 필터

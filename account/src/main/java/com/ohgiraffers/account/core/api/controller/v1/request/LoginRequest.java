@@ -8,7 +8,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "로그인 생성 요청")
 public record LoginRequest(
         @NotBlank
-        @Schema(description = "email값 ", example = "admin3",requiredMode = REQUIRED)
+        @Schema(description = "email값 ", example = "user3",requiredMode = REQUIRED)
         String email,
 
         @NotBlank
