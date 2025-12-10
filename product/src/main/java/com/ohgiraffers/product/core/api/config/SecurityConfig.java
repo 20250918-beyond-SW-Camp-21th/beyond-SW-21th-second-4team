@@ -1,12 +1,11 @@
-package com.ohgiraffers.order.core.config;
+package com.ohgiraffers.product.core.api.config;
 
-import com.ohgiraffers.order.security.HeaderAuthenticationFilter;
-import com.ohgiraffers.order.security.RestAccessDeniedHandler;
-import com.ohgiraffers.order.security.RestAuthenticationEntryPoint;
+import com.ohgiraffers.product.security.HeaderAuthenticationFilter;
+import com.ohgiraffers.product.security.RestAccessDeniedHandler;
+import com.ohgiraffers.product.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,18 +25,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(session
-                    -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exception ->
-                exception
-                        .authenticationEntryPoint(restAuthenticationEntryPoint)
-                        .accessDeniedHandler(restAccessDeniedHandler)
-        )
-        .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/**").permitAll()
-        )
-        // 기존 JWT 검증 필터 대신, Gateway가 전달한 헤더를 이용하는 필터 추가
-        .addFilterBefore(headerAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session
+                        -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception ->
+                        exception
+                                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                                .accessDeniedHandler(restAccessDeniedHandler)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()
+                )
+                // 기존 JWT 검증 필터 대신, Gateway가 전달한 헤더를 이용하는 필터 추가
+                .addFilterBefore(headerAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

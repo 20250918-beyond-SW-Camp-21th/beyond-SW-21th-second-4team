@@ -30,7 +30,7 @@ public class OrderService {
 
     @Transactional
     public void createOrder(OrderRequest orderRequest) {
-
+        
         // 요청 유효성 검증
         orderRequest.validate();
 
