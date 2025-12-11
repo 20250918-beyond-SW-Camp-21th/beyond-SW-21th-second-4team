@@ -5,6 +5,7 @@ import com.ohgiraffers.common.support.error.ErrorType;
 import com.ohgiraffers.order.core.api.command.common.ApiResultHandler;
 import com.ohgiraffers.order.core.api.command.client.PromotionClient;
 import com.ohgiraffers.order.core.api.command.response.PromotionResponse;
+import com.ohgiraffers.order.core.api.controller.v1.request.OrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +21,15 @@ public class PromotionReader {
 
         return apiResult.unwrap(
                 client.getPromotion(id),
-                () -> new CoreException(ErrorType.DEFAULT_ERROR)
+                () -> new CoreException(ErrorType.PROMOTION_READ_FAILED)
         );
     }
 
-    public PromotionResponse decrease(Long id, Integer quantity) {
+    public Integer decrease(OrderRequest orderRequest) {
 
         return apiResult.unwrap(
-                client.decrease(id, quantity),
-                () -> new CoreException(ErrorType.DEFAULT_ERROR)
+                client.checkTotalQuantity(orderRequest),
+                () -> new CoreException(ErrorType.PROMOTION_STOCK_DECREASE_FAILED)
         );
     }
 }

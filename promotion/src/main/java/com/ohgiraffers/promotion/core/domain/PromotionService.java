@@ -30,13 +30,21 @@ public class PromotionService {
     private final CommandClient commandClient;
 
     @Transactional
-    public void updateSoldQuantity(OrderRequest orderRequest) {
-        Promotion promotion = promotionRepository.findPromotionById(orderRequest.getId());
-        int soldQuantity = orderRequest.getSoldQuantity() + promotionRepository.findSoldQuantityById(orderRequest.getId());
+    public Integer updateSoldQuantity(OrderRequest orderRequest) {
+        try {
+            Promotion promotion = promotionRepository.findPromotionById(orderRequest.getPromotionId());
 
-        promotionRepository.updatePromotionSoldQuantity(orderRequest.getId(), soldQuantity);
-        String key = TimedealKeys.setPromotion(promotion.getId());
-        stringRedisTemplate.opsForValue().decrement(key, orderRequest.getSoldQuantity());
+
+            promotion.decreaseSoldQuantity(orderRequest.getQuantity());
+
+            String key = TimedealKeys.setPromotion(promotion.getId());
+
+            Long result = stringRedisTemplate.opsForValue().decrement(key, orderRequest.getQuantity());
+
+            return orderRequest.getQuantity();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     ;
@@ -45,35 +53,26 @@ public class PromotionService {
 
     @Transactional
     public void promotionSave(Long userId, PromotionRequest pr) {
-        AtomicReference<ResultType> createdSuccess = new AtomicReference<>(ResultType.ERROR);
-
 
         ProductResponse product = commandClient.getProduct(pr.getProductId());
         if (product == null) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PRODUCT_NOT_FOUND);
         }
 
-        Promotion promotion =
-                promotionRepository.findByProductId(pr.getProductId())
-                        .filter(p -> p.getPromotionStatus() != PromotionStatus.ENDED)
-                        .orElseGet(() -> {
-                            Promotion promotion1 = new Promotion(
-                                    userId,
-                                    pr.getProductId(),
-                                    pr.getDiscountRate(),
-                                    pr.getStartTime(),
-                                    pr.getEndTime(),
-                                    pr.getTotalQuantity()
-                            );
-                            if (pr.getStartTime().isAfter(LocalDateTime.now())) {
-                                promotion1.changeStatus(PromotionStatus.SCHEDULER);
-                            }
-                            createdSuccess.set(ResultType.SUCCESS);
-                            return promotionRepository.save(promotion1);
-                        });
-        promotion.setSalePrice((int) (pr.getDiscountRate() * product.price()));
+        Promotion promotion = new Promotion(
+                userId,
+                pr.getProductId(),
+                pr.getDiscountRate(),
+                pr.getStartTime(),
+                pr.getEndTime(),
+                pr.getTotalQuantity()
+        );
 
-
+        if (pr.getStartTime().isAfter(LocalDateTime.now())) {
+            promotion.changeStatus(PromotionStatus.SCHEDULER);
+        }
+        promotion.setSalePrice((int) (product.price() - (pr.getDiscountRate() * product.price())));
+        promotionRepository.save(promotion);
     }
 
     @Transactional
@@ -84,7 +83,7 @@ public class PromotionService {
                 .orElseThrow(() -> new IllegalArgumentException("Promotion not found: " + id));
 
         if (promotion.getPromotionStatus() != PromotionStatus.SCHEDULER) {
-            throw new IllegalStateException("현재 상태(" + promotion.getPromotionStatus() + ")에서는 수정할 수 없습니다. ");
+            throw new CoreException(ErrorType.PROMOTION_STATUS_ERROR);
         }
 
         promotion.updatePromotion(
@@ -99,20 +98,12 @@ public class PromotionService {
         promotionRepository.save(promotion);
     }
 
-    @Transactional
-    public void changePromotionStatus(Long id) {
-        PromotionStatus promotionStatus = promotionRepository.findPromotionStatusById(id);
-        Promotion promotion = promotionRepository.findPromotionById(id);
-        if (promotionStatus.equals(PromotionStatus.SCHEDULER) && promotion.getStartTime().isBefore(LocalDateTime.now())) {
-            promotion.changeStatus(PromotionStatus.ACTIVE);
-        } else if (promotionStatus.equals(PromotionStatus.ACTIVE) && promotion.getEndTime().isBefore(LocalDateTime.now())) {
-            promotion.changeStatus(PromotionStatus.ENDED);
-        }
-    }
-
-
     public void deletePromotion(Long Id) {
+        if(!promotionRepository.existsById(Id)) {
+            throw new CoreException(ErrorType.PROMOTION_NOT_FOUND);
+        }
         promotionRepository.deleteById(Id);
+
     }
 
 
@@ -130,9 +121,11 @@ public class PromotionService {
                     promotion.getSalePrice(),
                     promotion.getDiscountRate(),
                     promotion.getTotalQuantity(),
+                    promotion.getSoldQuantity(),
                     promotion.getStartTime(),
                     promotion.getEndTime(),
-                    product.imageUrl()
+                    product.imageUrl(),
+                    promotion.getPromotionStatus()
             ));
         }
         return result;
@@ -160,9 +153,11 @@ public class PromotionService {
                     promotion.getSalePrice(),
                     promotion.getDiscountRate(),
                     promotion.getTotalQuantity(),
+                    promotion.getSoldQuantity(),
                     promotion.getStartTime(),
                     promotion.getEndTime(),
-                    product.imageUrl()
+                    product.imageUrl(),
+                    promotion.getPromotionStatus()
             ));
         }
         PromotionListResponse promotionListResponse = new PromotionListResponse(result);
@@ -201,20 +196,22 @@ public class PromotionService {
                 promotion.getSalePrice(),
                 promotion.getDiscountRate(),
                 promotion.getTotalQuantity(),
+                promotion.getSoldQuantity(),
                 promotion.getStartTime(),
                 promotion.getEndTime(),
-                product.imageUrl()
+                product.imageUrl(),
+                promotion.getPromotionStatus()
         );
     }
 
-    public List<Promotion> updateStatus() {
+/*    public List<Promotion> updateStatus() {
         return promotionRepository.findAll();
     }
 
     public OrderResponse findOrderResponseById(long id) {
         Promotion promotion = promotionRepository.findPromotionById(id);
         return new OrderResponse(promotion.getId(), promotion.getSalePrice(), promotion.getTotalQuantity(), promotion.getPromotionStatus());
-    }
+    }*/
 
 
 }

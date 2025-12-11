@@ -41,8 +41,8 @@ public class Promotion extends BaseEntity {
     @Column(name = "total_quantity")
     private Integer totalQuantity;
 
-    @Column(name = "sold_quantity")
-    private Integer soldQuantity;
+    @Column(name = "sold_quantity" ,  nullable = false)
+    private Integer soldQuantity = 0;
 
     @Column(name = "promotion_status")
     @Enumerated(EnumType.STRING)
@@ -62,13 +62,6 @@ public class Promotion extends BaseEntity {
         this.promotionStatus = promotionStatus;
     }
 
-    public void increaseSoldQuantity() {
-        if(this.soldQuantity > this.totalQuantity) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
-        }
-        this.soldQuantity += 1;
-    }
-
     public void updatePromotion(Long adminId,
                                 Long productId,
                                 Double discountRate,
@@ -82,6 +75,13 @@ public class Promotion extends BaseEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalQuantity = totalQuantity;
+    }
+
+    public void decreaseSoldQuantity(Integer quantity) {
+        if(this.soldQuantity + quantity > this.totalQuantity) {
+            throw new CoreException(ErrorType.PROMOTION_SOLDQUANTITY_OVER);
+        }
+        this.soldQuantity += quantity;
     }
 
 }

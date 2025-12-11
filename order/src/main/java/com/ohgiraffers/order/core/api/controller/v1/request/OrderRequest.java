@@ -23,19 +23,15 @@ public class OrderRequest {
     @Schema(description = "구매 수량")
     private Integer quantity;
 
-    @NotNull
-    @Schema(description = "구매자 Id")
-    private Long userId;
-
     public void validate() {
         if (promotionId == null) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.PROMOTION_ID_INVALID);
         }
         if (quantity <= 0) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.OUT_OF_STOCK);
         }
         if(quantity > 5) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.QUANTITY_LIMIT_EXCEEDED);
         }
     }
 }

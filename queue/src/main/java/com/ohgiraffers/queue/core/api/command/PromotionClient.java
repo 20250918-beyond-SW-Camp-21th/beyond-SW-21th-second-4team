@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PromotionClient {
 
     @GetMapping("/{id}")
-    ApiResult<PromotionResponse> findPromotionById(@PathVariable long id);
+    ApiResult<PromotionResponse> findPromotionById(@PathVariable Long id);
 
     @GetMapping("/status/{promotionStatus}")
     ApiResult<PromotionListResponse> getPromotionsStatusAll(@PathVariable String promotionStatus);
