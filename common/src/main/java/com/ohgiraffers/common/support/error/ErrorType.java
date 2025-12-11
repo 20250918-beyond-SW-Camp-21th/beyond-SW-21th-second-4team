@@ -37,6 +37,8 @@ public enum ErrorType {
     PROMOTION_SOLDQUANTITY_OVER(HttpStatus.BAD_REQUEST, ErrorCode.PROMOTION_SOLDQUANTITY_OVER, "프로모션 판매 수량을 초과했습니다.", LogLevel.WARN),
     PROMOTION_STATUS_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.PROMOTION_STATUS_ERROR, "프로모션 상태가 올바르지 않습니다.", LogLevel.WARN),
     PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.PROMOTION_NOT_FOUND, "프로모션이 존재하지 않습니다.", LogLevel.WARN),
+    PROMOTION_STATUS_INVALID(HttpStatus.BAD_REQUEST, ErrorCode.PROMOTION_STATUS_INVALID, "프로모션이 활성화된 상태가 아닙니다.", LogLevel.WARN),
+
 
     // ORDER REQUEST VALIDATION ERROR
     PROMOTION_ID_INVALID(HttpStatus.BAD_REQUEST, ErrorCode.PROMOTION_ID_INVALID, "프로모션 ID가 유효하지 않습니다.", LogLevel.WARN),
@@ -50,7 +52,6 @@ public enum ErrorType {
     // ORDER(PROMOTION ERROR)
     PROMOTION_READ_FAILED(HttpStatus.NOT_FOUND, ErrorCode.PROMOTION_READ_FAILED, "프로모션 조회에 실패했습니다.", LogLevel.WARN),
     PROMOTION_STOCK_DECREASE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.PROMOTION_STOCK_DECREASE_FAILED, "재고 차감에 실패했습니다.", LogLevel.ERROR),
-    PROMOTION_STATUS_INVALID(HttpStatus.BAD_REQUEST, ErrorCode.PROMOTION_STATUS_INVALID, "프로모션이 활성화되지 않았습니다.", LogLevel.WARN),
 
     // ORDER DB ERROR
     ORDER_DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.ORDER_DB_ERROR, "주문 처리 중 DB 오류가 발생했습니다.", LogLevel.ERROR),

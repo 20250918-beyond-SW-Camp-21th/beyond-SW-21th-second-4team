@@ -13,7 +13,7 @@ public class PromotionValidator {
 
         // 상태 검증
         if(p.promotionStatus() != PromotionStatus.ACTIVE) {
-            throw new CoreException(ErrorType.PROMOTION_STAUTS_INVALID);
+            throw new CoreException(ErrorType.PROMOTION_STATUS_INVALID);
         }
 
         // 재고 수량 검증
