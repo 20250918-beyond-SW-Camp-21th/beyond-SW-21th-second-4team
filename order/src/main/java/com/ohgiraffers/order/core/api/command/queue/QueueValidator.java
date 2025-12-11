@@ -2,7 +2,6 @@ package com.ohgiraffers.order.core.api.command.queue;
 
 import com.ohgiraffers.common.support.error.CoreException;
 import com.ohgiraffers.common.support.error.ErrorType;
-import com.ohgiraffers.common.support.response.ApiResult;
 import com.ohgiraffers.order.core.api.command.client.QueueClient;
 import com.ohgiraffers.order.core.api.command.common.ApiResultHandler;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class QueueReader {
+public class QueueValidator {
 
     private final ApiResultHandler apiResult;
     private final QueueClient client;
@@ -23,9 +22,15 @@ public class QueueReader {
     }
 
     public boolean complete(Long timedealId, Long userId) {
-        return apiResult.unwrap(
+
+        boolean result = apiResult.unwrap(
                 client.completeQueue(timedealId, userId),
                 () -> new CoreException(ErrorType.DEFAULT_ERROR)
         );
+
+        if (!result) {
+            throw new CoreException(ErrorType.DEFAULT_ERROR);
+        }
+        return result;
     }
 }
