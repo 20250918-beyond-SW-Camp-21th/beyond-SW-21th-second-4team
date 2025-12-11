@@ -52,14 +52,14 @@ public class OrderService {
             promotionValidator.validate(promotion, orderRequest.getQuantity());
 
             // 프로모션 재고 차감
-//            promotionReader.decrease(orderRequest);
+            promotionReader.decrease(orderRequest);
 
             // 유저 잔액 차감
             userReader.decreaseMoney(user.id(), promotion.salePrice());
 
             // Order 생성
-
             Order order = Order.create(user.id());
+
             // 주문 금액 계산
             var totalAmount = order.calPrice(promotion.salePrice(), orderRequest.getQuantity());
 
