@@ -38,7 +38,7 @@ public class OrderService {
 
         try {
             if (!lock.tryLock(5, 30, TimeUnit.SECONDS)) {
-                throw new CoreException(ErrorType.DEFAULT_ERROR);
+                throw new CoreException(ErrorType.REDIS_LOCK_EXPIRED);
             }
 
             var user = userReader.getUser(userId);
@@ -75,7 +75,7 @@ public class OrderService {
             orderDetailRepository.save(detail);
 
         } catch (InterruptedException e) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.ORDER_DB_ERROR);
         } finally {
             lock.unlock();
         }
