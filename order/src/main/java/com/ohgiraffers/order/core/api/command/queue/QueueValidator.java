@@ -17,7 +17,7 @@ public class QueueValidator {
     public void verify(Long timedealId, Long userId) {
         apiResult.unwrap(
                 client.verifyQueue(timedealId, userId),
-                () -> new CoreException(ErrorType.DEFAULT_ERROR)
+                () -> new CoreException(ErrorType.QUEUE_NOT_PASSED)
         );
     }
 
@@ -25,11 +25,11 @@ public class QueueValidator {
 
         boolean result = apiResult.unwrap(
                 client.completeQueue(timedealId, userId),
-                () -> new CoreException(ErrorType.DEFAULT_ERROR)
+                () -> new CoreException(ErrorType.FEIGN_CLIENT_ERROR)
         );
 
         if (!result) {
-            throw new CoreException(ErrorType.DEFAULT_ERROR);
+            throw new CoreException(ErrorType.QUEUE_NOT_PASSED);
         }
         return result;
     }
