@@ -253,7 +253,7 @@ public class QueueRepositoryImpl implements QueueRepository {
         ZSetOperations<String, String> zSetOps = stringRedisTemplate.opsForZSet();
         String proceedQueueKey = TimedealKeys.proceedQueue(timedealId);
 
-        Set<String> users = zSetOps.range(proceedQueueKey, 0, now);
+        Set<String> users = zSetOps.rangeByScore(proceedQueueKey, 0, now);
         if (users != null && !users.isEmpty()) {
             zSetOps.removeRange(proceedQueueKey, 0, now);
         }

@@ -84,12 +84,15 @@ public class QueueController {
             @ApiResponse(responseCode = "404", description = "대기열을 찾을 수 없음")
     })
     public ApiResult<QueueStatusResponse> getQueueStatus(
-            @AuthenticationPrincipal String userId,
+            @Parameter(description = "유저 아이디", example = "1", required = true)
+            @Positive
+            @RequestParam(value = "userId") Long userId,
+
             @Parameter(description = "타임딜 아이디", example = "1", required = true)
             @Positive
             @RequestParam(value = "timedealId") Long timedealId
     ) {
-        return ApiResult.success(queueService.getQueueStatus(timedealId, Long.parseLong(userId)));
+        return ApiResult.success(queueService.getQueueStatus(timedealId, userId));
     }
 
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
