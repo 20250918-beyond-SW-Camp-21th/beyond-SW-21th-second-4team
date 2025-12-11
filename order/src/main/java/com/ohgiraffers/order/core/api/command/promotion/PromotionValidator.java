@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PromotionValidator {
 
-    public void validate(PromotionResponse p) {
+    public void validate(PromotionResponse p, Integer quantity) throws CoreException {
 
         // 상태 검증
         if(p.promotionStatus() != PromotionStatus.ACTIVE) {
@@ -17,7 +17,7 @@ public class PromotionValidator {
         }
 
         // 재고 수량 검증
-        if(p.soldQuantity() < p.totalQuantity()) {
+        if((p.totalQuantity() - p.soldQuantity()) <= quantity) {
             throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
     }

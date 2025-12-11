@@ -13,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommandClient {
     private final PromotionClient promotionClient;
-    private final UserClient userClient;
 
     public List<Long> getActivePromotions() {
         ApiResult<PromotionListResponse> response = promotionClient.getPromotionsStatusAll("ACTIVE");
@@ -28,19 +27,6 @@ public class CommandClient {
 
     public boolean isValidPromotion(Long timedealId) {
         ApiResult<PromotionResponse> promotionResponse = promotionClient.findPromotionById(timedealId);
-        return promotionResponse.getResult() != ResultType.ERROR;
-    }
-
-    public boolean isValidUser(Long userId) {
-        ApiResult<String> response = userClient.getUserGrade(userId);
-        if (response.getResult() == ResultType.ERROR) {
-            return false;
-        }
-
-        if (response.getData().equals("ADMIN")) {
-            return false;
-        }
-
-        return true;
+        return promotionResponse.getResult() == ResultType.SUCCESS;
     }
 }

@@ -70,16 +70,13 @@ public class PromotionController {
 
     @Operation(summary = "프로모션 검색", description = "입력하신 ID로 프로모션을 검색합니다..")
     @GetMapping("/{id}")
-    public ApiResult<PromotionResponse> findPromotionById(
-            @PathVariable long id
-    ) {
+    public ApiResult<PromotionResponse> findPromotionById(@PathVariable Long id) {
         return ApiResult.success(promotionService.findPromotionById(id));
     }
 
     @Operation(summary = "feign 필요 파일 조회")
     @PostMapping("/order")
-    public ApiResult<?> checkTotalQuantity(@RequestBody OrderRequest orderRequest) {
-        promotionService.updateSoldQuantity(orderRequest);
-        return ApiResult.success();
+    public ApiResult<Integer> checkTotalQuantity(@RequestBody OrderRequest orderRequest) {
+        return ApiResult.success(promotionService.updateSoldQuantity(orderRequest));
     }
 }

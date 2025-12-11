@@ -30,13 +30,15 @@ public class PromotionService {
     private final CommandClient commandClient;
 
     @Transactional
-    public void updateSoldQuantity(OrderRequest orderRequest) {
-        Promotion promotion = promotionRepository.findPromotionById(orderRequest.getId());
-        int soldQuantity = orderRequest.getSoldQuantity() + promotionRepository.findSoldQuantityById(orderRequest.getId());
+    public Integer updateSoldQuantity(OrderRequest orderRequest) {
+        Promotion promotion = promotionRepository.findPromotionById(orderRequest.getPromotionId());
 
-        promotionRepository.updatePromotionSoldQuantity(orderRequest.getId(), soldQuantity);
+        promotion.decreaseSoldQuantity(orderRequest.getQuantity());
+
         String key = TimedealKeys.setPromotion(promotion.getId());
-        stringRedisTemplate.opsForValue().decrement(key, orderRequest.getSoldQuantity());
+        Long result = stringRedisTemplate.opsForValue().decrement(key, orderRequest.getQuantity());
+
+        return orderRequest.getQuantity();
     }
 
     ;
@@ -45,35 +47,26 @@ public class PromotionService {
 
     @Transactional
     public void promotionSave(Long userId, PromotionRequest pr) {
-        AtomicReference<ResultType> createdSuccess = new AtomicReference<>(ResultType.ERROR);
-
 
         ProductResponse product = commandClient.getProduct(pr.getProductId());
         if (product == null) {
             throw new CoreException(ErrorType.DEFAULT_ERROR);
         }
 
-        Promotion promotion =
-                promotionRepository.findByProductId(pr.getProductId())
-                        .filter(p -> p.getPromotionStatus() != PromotionStatus.ENDED)
-                        .orElseGet(() -> {
-                            Promotion promotion1 = new Promotion(
-                                    userId,
-                                    pr.getProductId(),
-                                    pr.getDiscountRate(),
-                                    pr.getStartTime(),
-                                    pr.getEndTime(),
-                                    pr.getTotalQuantity()
-                            );
-                            if (pr.getStartTime().isAfter(LocalDateTime.now())) {
-                                promotion1.changeStatus(PromotionStatus.SCHEDULER);
-                            }
-                            createdSuccess.set(ResultType.SUCCESS);
-                            return promotionRepository.save(promotion1);
-                        });
-        promotion.setSalePrice((int) (pr.getDiscountRate() * product.price()));
+        Promotion promotion = new Promotion(
+                userId,
+                pr.getProductId(),
+                pr.getDiscountRate(),
+                pr.getStartTime(),
+                pr.getEndTime(),
+                pr.getTotalQuantity()
+        );
 
-
+        if (pr.getStartTime().isAfter(LocalDateTime.now())) {
+            promotion.changeStatus(PromotionStatus.SCHEDULER);
+        }
+        promotion.setSalePrice((int) (product.price() - (pr.getDiscountRate() * product.price())));
+        promotionRepository.save(promotion);
     }
 
     @Transactional
@@ -130,9 +123,11 @@ public class PromotionService {
                     promotion.getSalePrice(),
                     promotion.getDiscountRate(),
                     promotion.getTotalQuantity(),
+                    promotion.getSoldQuantity(),
                     promotion.getStartTime(),
                     promotion.getEndTime(),
-                    product.imageUrl()
+                    product.imageUrl(),
+                    promotion.getPromotionStatus()
             ));
         }
         return result;
@@ -160,9 +155,11 @@ public class PromotionService {
                     promotion.getSalePrice(),
                     promotion.getDiscountRate(),
                     promotion.getTotalQuantity(),
+                    promotion.getSoldQuantity(),
                     promotion.getStartTime(),
                     promotion.getEndTime(),
-                    product.imageUrl()
+                    product.imageUrl(),
+                    promotion.getPromotionStatus()
             ));
         }
         PromotionListResponse promotionListResponse = new PromotionListResponse(result);
@@ -201,9 +198,11 @@ public class PromotionService {
                 promotion.getSalePrice(),
                 promotion.getDiscountRate(),
                 promotion.getTotalQuantity(),
+                promotion.getSoldQuantity(),
                 promotion.getStartTime(),
                 promotion.getEndTime(),
-                product.imageUrl()
+                product.imageUrl(),
+                promotion.getPromotionStatus()
         );
     }
 
