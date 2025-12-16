@@ -12,16 +12,15 @@ export const orderService = {
   /**
    * Create a new order
    * 백엔드 응답: { OrderId: number, quantity: number }
-   * Note: userId는 request body에 포함 (백엔드 OrderRequest 요구사항)
+   * userId는 @AuthenticationPrincipal로 백엔드에서 자동 추출됨
    */
   async createOrder(
-    userId: number,
     promotionId: number,
     quantity: number
   ): Promise<OrderResponse> {
-    const request: CreateOrderRequest = { promotionId, quantity, userId };
+    const request: CreateOrderRequest = { promotionId, quantity };
     const response = await api.post<ApiResult<OrderResponse>>(
-      API_ENDPOINTS.ORDERS,
+      `${API_ENDPOINTS.ORDERS}/`,
       request
     );
     return handleApiResponse(response.data);

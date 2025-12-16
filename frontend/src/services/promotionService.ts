@@ -7,11 +7,11 @@ import type { Promotion, PromotionStatus, PromotionRequest, PromotionListRespons
 export const promotionService = {
   /**
    * Get all promotions
-   * Gateway: /api/v1/promotions -> promotion-service /
+   * Gateway: /api/v1/promotions/ -> promotion-service /
    */
   async getPromotions(): Promise<Promotion[]> {
     const response = await api.get<ApiResult<Promotion[]>>(
-      API_ENDPOINTS.PROMOTIONS
+      `${API_ENDPOINTS.PROMOTIONS}/`
     );
     return handleApiResponse(response.data);
   },
@@ -43,7 +43,7 @@ export const promotionService = {
    */
   async createPromotion(request: PromotionRequest): Promise<void> {
     const response = await api.post<ApiResult<void>>(
-      API_ENDPOINTS.PROMOTIONS,
+      `${API_ENDPOINTS.PROMOTIONS}/`,
       request
     );
     return handleApiResponse(response.data);

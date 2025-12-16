@@ -17,5 +17,6 @@ public interface UserClient {
     @GetMapping("/users/decreaseMoney")
     ApiResult<Object> decreaseMoney(
             @RequestParam Long id,
-            @RequestParam Integer price);
+            @RequestParam Integer price,
+            @RequestParam Integer save);
 }

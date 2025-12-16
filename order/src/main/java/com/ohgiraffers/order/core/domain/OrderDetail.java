@@ -46,9 +46,9 @@ public class OrderDetail extends BaseEntity {
                 request.getQuantity(),
                 promotion.salePrice(),
                 order.getTotalAmount(),
-                promotion.productImageUrl(),
-                promotion.productName()
-        );
+                promotion.productName(),
+                promotion.productImageUrl()
+                );
 
         return detail;
     }

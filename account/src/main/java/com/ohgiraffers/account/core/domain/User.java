@@ -48,4 +48,8 @@ public class User extends BaseEntity {
         }
         this.money -= salePrice;
     }
+
+    public void increaseSave(Integer save) {
+        this.total_saved += save;
+    }
 }

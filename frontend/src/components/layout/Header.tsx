@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../common';
 
 export interface HeaderProps {
@@ -12,6 +12,29 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // 타임딜 클릭 시 현재 경로가 /promotions이면 새로고침, 아니면 이동
+  const handleTimedealClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/promotions') {
+      window.location.reload();
+    } else {
+      navigate('/promotions');
+    }
+  };
+
+  // 주문내역 클릭 시 현재 경로가 /orders이면 새로고침, 아니면 이동
+  const handleOrdersClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/orders') {
+      window.location.reload();
+    } else {
+      navigate('/orders');
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border-default shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
@@ -25,19 +48,21 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              to="/promotions"
-              className="text-text-secondary hover:text-sale-red transition-colors font-medium"
+            <a
+              href="/promotions"
+              onClick={handleTimedealClick}
+              className="text-text-secondary hover:text-sale-red transition-colors font-medium cursor-pointer"
             >
               타임딜
-            </Link>
+            </a>
             {user && (
-              <Link
-                to="/orders"
-                className="text-text-secondary hover:text-sale-red transition-colors font-medium"
+              <a
+                href="/orders"
+                onClick={handleOrdersClick}
+                className="text-text-secondary hover:text-sale-red transition-colors font-medium cursor-pointer"
               >
                 주문내역
-              </Link>
+              </a>
             )}
           </nav>
 

@@ -131,16 +131,31 @@ export const Orders: React.FC = () => {
             >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-text-primary">
-                        {order.PromotionName}
-                      </h3>
-                      {getStatusBadge()}
-                    </div>
-                    <div className="text-sm text-text-meta space-y-1">
-                      <p>주문 번호: #{order.orderId.toString().padStart(8, '0')}</p>
-                      <p>주문 일시: {new Date(order.orderDate).toLocaleString('ko-KR')}</p>
+                  {/* 상품 이미지 */}
+                  <div className="flex items-start gap-4 flex-1">
+                    {order.image && (
+                      <div className="w-20 h-20 bg-bg-gray rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={order.image}
+                          alt={order.PromotionName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-bold text-text-primary">
+                          {order.PromotionName}
+                        </h3>
+                        {getStatusBadge()}
+                      </div>
+                      <div className="text-sm text-text-meta space-y-1">
+                        <p>주문 번호: #{order.orderId.toString().padStart(8, '0')}</p>
+                        <p>주문 일시: {new Date(order.orderDate).toLocaleString('ko-KR')}</p>
+                      </div>
                     </div>
                   </div>
                   <div className="text-right">
@@ -154,18 +169,13 @@ export const Orders: React.FC = () => {
                 </div>
 
                 {/* Additional Info */}
-                <div className="flex items-center justify-between pt-4 border-t border-border-default">
+                <div className="flex items-center pt-4 border-t border-border-default">
                   <div className="flex items-center gap-2 text-sm text-text-meta">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>배송 준비 중</span>
                   </div>
-                  {order.image && (
-                    <div className="w-16 h-16 bg-bg-gray rounded overflow-hidden">
-                      <img src={order.image} alt={order.PromotionName} className="w-full h-full object-cover" />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

@@ -106,11 +106,15 @@ public class UserService {
     }
 
     @Transactional
-    public void decreaseMoney(Long userId, Integer price) {
+    public void decreaseMoney(Long userId, Integer price, Integer save) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CoreException(ErrorType.USER_NOT_FOUND));
 
         user.decreaseMoney(price);
+
+        user.increaseSave(save);
+
+        userRepository.save(user);
     }
 
 }

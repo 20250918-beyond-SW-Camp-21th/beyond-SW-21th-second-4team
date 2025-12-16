@@ -1,10 +1,10 @@
 // Order Types (백엔드 API 스펙 기준)
 
 // 백엔드 OrderRequest (POST /api/v1/orders)
+// userId는 @AuthenticationPrincipal로 백엔드에서 자동 추출
 export interface CreateOrderRequest {
   promotionId: number;
   quantity: number;
-  userId: number;
 }
 
 // 백엔드 OrderResponse (POST /api/v1/orders 응답)
@@ -29,10 +29,11 @@ export interface Order {
 export type OrderStatus = 'DONE' | 'CANCELLED';
 
 // 백엔드 MyPageOrderResponse (GET /api/v1/users/me/orders)
+// Java record 필드명이 PromotionName (대문자 P)으로 되어있어 JSON도 대문자로 직렬화됨
 export interface MyPageOrderResponse {
   orderId: number;
   image: string;
-  PromotionName: string;    // 백엔드는 대문자 P
+  PromotionName: string;    // Java record 필드명 그대로 (대문자 P)
   quantity: number;
   price: number;
   orderDate: string;        // LocalDateTime

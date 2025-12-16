@@ -54,7 +54,7 @@ public class OrderService {
             promotionReader.decrease(orderRequest);
 
             // 유저 잔액 차감
-            userReader.decreaseMoney(user.id(), promotion.salePrice());
+            userReader.decreaseMoney(user.id(), promotion.salePrice(), promotion.originalPrice() - promotion.salePrice());
 
             // 대기열 완료 처리
             queueValidator.complete(promotion.id(), user.id());

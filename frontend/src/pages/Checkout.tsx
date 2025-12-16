@@ -41,7 +41,8 @@ export const Checkout: React.FC = () => {
     const newQuantity = quantity + delta;
     if (promotion) {
       const remainingQuantity = promotion.totalQuantity - (promotion.soldQuantity || 0);
-      if (newQuantity >= 1 && newQuantity <= 10 && newQuantity <= remainingQuantity) {
+      // 최대 구매 수량: 5개
+      if (newQuantity >= 1 && newQuantity <= 5 && newQuantity <= remainingQuantity) {
         setQuantity(newQuantity);
       }
     }
@@ -54,9 +55,9 @@ export const Checkout: React.FC = () => {
       setIsProcessing(true);
 
       // 주문 생성 API 호출
-      // 백엔드 응답: { OrderId: number, quantity: number }
-      const orderResponse = await orderService.createOrder(
-        user.id,
+      // userId는 백엔드에서 @AuthenticationPrincipal로 자동 추출됨
+      // 백엔드가 ApiResult.success()만 반환하므로 응답 데이터는 null일 수 있음
+      await orderService.createOrder(
         promotion.id,
         quantity
       );
@@ -66,7 +67,8 @@ export const Checkout: React.FC = () => {
       const salePrice = promotion.salePrice || Math.round((promotion.originalPrice || 0) * (1 - promotion.discountRate / 100));
       const totalPrice = salePrice * quantity;
 
-      navigate(`/order-complete?orderId=${orderResponse.OrderId}&productName=${encodeURIComponent(productName)}&quantity=${quantity}&totalPrice=${totalPrice}`);
+      // 백엔드가 orderId를 반환하지 않으므로 제외
+      navigate(`/order-complete?productName=${encodeURIComponent(productName)}&quantity=${quantity}&totalPrice=${totalPrice}`);
     } catch (err: any) {
       console.error('주문 생성 실패:', err);
 
@@ -109,7 +111,7 @@ export const Checkout: React.FC = () => {
   const isSoldOut = remainingQuantity === 0;
 
   const productName = promotion.productName || `상품 #${promotion.productId}`;
-  const productImage = promotion.productImage;
+  const productImage = promotion.productImageUrl || promotion.productImage;
   const originalPrice = promotion.originalPrice || 0;
   const salePrice = promotion.salePrice || Math.round(originalPrice * (1 - promotion.discountRate / 100));
   const totalPrice = salePrice * quantity;
@@ -228,7 +230,7 @@ export const Checkout: React.FC = () => {
                   <span className="text-2xl font-bold w-16 text-center">{quantity}</span>
                   <button
                     onClick={() => handleQuantityChange(1)}
-                    disabled={quantity >= 10 || quantity >= remainingQuantity}
+                    disabled={quantity >= 5 || quantity >= remainingQuantity}
                     className="w-12 h-12 border-2 border-border-default rounded-lg hover:border-sale-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-xl font-bold"
                   >
                     +
@@ -239,7 +241,7 @@ export const Checkout: React.FC = () => {
                     남은 재고: {remainingQuantity}개
                   </div>
                   <div className="text-xs text-text-meta">
-                    (최대 구매 수량: 10개)
+                    (최대 구매 수량: 5개)
                   </div>
                 </div>
               </div>

@@ -100,8 +100,8 @@ public class UserController {
     }
 
     @GetMapping("/users/decreaseMoney")
-    ApiResult<?> decreaseMoney(@RequestParam Long id, @RequestParam Integer price) {
-        userService.decreaseMoney(id, price);
+    ApiResult<?> decreaseMoney(@RequestParam Long id, @RequestParam Integer price, @RequestParam Integer save) {
+        userService.decreaseMoney(id, price, save);
         return ApiResult.success();
     }
 }

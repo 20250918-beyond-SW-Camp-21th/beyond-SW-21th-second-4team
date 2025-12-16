@@ -16,7 +16,7 @@ export const adminService = {
    */
   async createAdmin(request: AdminRequest): Promise<AdminResponse> {
     const response = await api.post<ApiResult<AdminResponse>>(
-      API_ENDPOINTS.ADMIN_CREATE,
+      `${API_ENDPOINTS.ADMIN_CREATE}/`,
       request
     );
     return handleApiResponse(response.data);

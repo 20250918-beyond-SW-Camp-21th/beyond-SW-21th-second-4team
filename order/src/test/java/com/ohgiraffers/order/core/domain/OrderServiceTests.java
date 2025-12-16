@@ -79,7 +79,7 @@ class OrderServiceTests {
                 "productName",
                 20000,
                 10000,            // salePrice
-                0.5,
+                50,
                 100,
                 10,
                 LocalDateTime.now(),
@@ -97,7 +97,7 @@ class OrderServiceTests {
         verify(orderDetailRepository, times(1)).save(any(OrderDetail.class));
 
         verify(promotionReader, times(1)).decrease(request);
-        verify(userReader, times(1)).decreaseMoney(mockUser.id(), mockPromotion.salePrice());
+        verify(userReader, times(1)).decreaseMoney(mockUser.id(), mockPromotion.salePrice(), mockPromotion.originalPrice() - mockPromotion.salePrice());
         verify(queueValidator, times(1)).complete(mockPromotion.id(), mockUser.id());
 
         verify(lock, times(1)).unlock();

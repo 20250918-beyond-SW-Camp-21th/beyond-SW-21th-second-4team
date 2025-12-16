@@ -23,10 +23,10 @@ public class UserReader {
         );
     }
 
-    public void decreaseMoney(Long id, Integer price) {
+    public void decreaseMoney(Long id, Integer price, Integer save) {
 
         apiResult.unwrap(
-            client.decreaseMoney(id, price),
+            client.decreaseMoney(id, price, save),
             () -> new CoreException(ErrorType.USER_BALANCE_DECREASE_FAILED)
         );
     }

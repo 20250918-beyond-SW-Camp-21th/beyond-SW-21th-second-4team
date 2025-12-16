@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../components/common';
 
 interface OrderInfo {
-  orderId: number;
+  orderId?: number;       // 백엔드가 반환하지 않을 수 있음
   productName: string;
   quantity: number;
   totalPrice: number;
@@ -22,9 +22,10 @@ export const OrderComplete: React.FC = () => {
     const quantity = searchParams.get('quantity');
     const totalPrice = searchParams.get('totalPrice');
 
-    if (orderId && productName && quantity && totalPrice) {
+    // orderId는 필수가 아님 (백엔드가 반환하지 않을 수 있음)
+    if (productName && quantity && totalPrice) {
       setOrderInfo({
-        orderId: parseInt(orderId),
+        orderId: orderId ? parseInt(orderId) : undefined,
         productName: decodeURIComponent(productName),
         quantity: parseInt(quantity),
         totalPrice: parseInt(totalPrice),
@@ -82,12 +83,14 @@ export const OrderComplete: React.FC = () => {
 
         {/* Body */}
         <div className="p-6 space-y-4">
-          <div className="flex justify-between items-center pb-4 border-b border-border-default">
-            <span className="text-text-meta">주문 번호</span>
-            <span className="font-mono font-bold text-text-primary">
-              #{orderInfo.orderId.toString().padStart(8, '0')}
-            </span>
-          </div>
+          {orderInfo.orderId && (
+            <div className="flex justify-between items-center pb-4 border-b border-border-default">
+              <span className="text-text-meta">주문 번호</span>
+              <span className="font-mono font-bold text-text-primary">
+                #{orderInfo.orderId.toString().padStart(8, '0')}
+              </span>
+            </div>
+          )}
 
           <div className="flex justify-between items-center pb-4 border-b border-border-default">
             <span className="text-text-meta">주문 일시</span>
